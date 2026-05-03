@@ -1,62 +1,58 @@
 import { useState, useCallback } from "react";
 import { ethers } from "ethers";
 import { useWallet } from "./useWallet";
-import { CONTRACT_ADDRESS, CONTRACT_ABI } from "./contractConfig";
 import { useTransaction } from "./TransactionContext";
+import { CONTRACT_ADDRESS, CONTRACT_ABI } from "./contractConfig";
+import { parseTransactionError } from "./errorHandler";
 
 /**
  * useListToken
  *
- * Provides a `list(tokenId, priceInEth)` function that sends a transaction
- * to list an owned token on the marketplace at a given price.
- *
- * Usage:
- *   const { list, isLoading, error } = useListToken();
- *   list(tokenId, "0.5"); // priceInEth is a string like "0.5"
- *
- * @returns {{ list: Function, isLoading: boolean, error: string|null }}
+ * Lists an owned token for sale.
+ * Price must be <= 110% of mint price (enforced by contract).
  */
 export function useListToken() {
   const { signer } = useWallet();
   const { startTransaction, endTransaction } = useTransaction();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [isPromptingWallet, setIsPromptingWallet] = useState(false);
+  const [isMining, setIsMining]                   = useState(false);
+  const [error, setError]                         = useState(null);
+  const [success, setSuccess]                     = useState(false);
 
-  const list = useCallback(
-    async (tokenId, priceInEth) => {
-      if (!signer) {
-        setError("Wallet not connected.");
-        return;
-      }
+  const listToken = useCallback(async (tokenId, priceInEth) => {
+    if (!signer) {
+      setError("Wallet not connected.");
+      return;
+    }
 
-      setIsLoading(true);
-      setError(null);
+    setError(null);
+    setSuccess(false);
+    setIsPromptingWallet(true);
+
+    try {
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+      const priceInWei = ethers.parseEther(priceInEth.toString());
+
+      const tx = await contract.listToken(tokenId, priceInWei);
+
+      setIsPromptingWallet(false);
+      setIsMining(true);
       startTransaction();
 
-      try {
-        const contract = new ethers.Contract(
-          CONTRACT_ADDRESS,
-          CONTRACT_ABI,
-          signer
-        );
+      const receipt = await tx.wait();
+      if (receipt.status === 1) setSuccess(true);
+      else setError("Transaction failed on-chain.");
 
-        const priceInWei = ethers.parseEther(priceInEth);
-        const tx = await contract.listToken(tokenId, priceInWei);
-        await tx.wait();
-      } catch (err) {
-        if (err.code === "ACTION_REJECTED") {
-          setError("Transaction rejected by user.");
-        } else {
-          setError("Failed to list token. Please try again.");
-        }
-      } finally {
-        setIsLoading(false);
-        endTransaction();
-      }
-    },
-    [signer, startTransaction, endTransaction]
-  );
+    } catch (err) {
+      console.error("Listing error:", err);
+      setError(parseTransactionError(err));
+    } finally {
+      setIsPromptingWallet(false);
+      setIsMining(false);
+      endTransaction();
+    }
+  }, [signer, startTransaction, endTransaction]);
 
-  return { list, isLoading, error };
+  return { listToken, isPromptingWallet, isMining, error, success };
 }

@@ -1,62 +1,61 @@
 import { useState, useCallback } from "react";
 import { ethers } from "ethers";
 import { useWallet } from "./useWallet";
-import { CONTRACT_ADDRESS, CONTRACT_ABI } from "./contractConfig";
 import { useTransaction } from "./TransactionContext";
+import { CONTRACT_ADDRESS, CONTRACT_ABI } from "./contractConfig";
+import { parseTransactionError } from "./errorHandler";
 
 /**
  * useMintToken
  *
- * Provides a `mint(metadata)` function that sends a transaction
- * to mint a new token. The metadata string is optional — the contract
- * may or may not use it depending on the Protocol Architect's design.
- *
- * Usage:
- *   const { mint, isLoading, error } = useMintToken();
- *   mint("some-metadata-string");
- *
- * @returns {{ mint: Function, isLoading: boolean, error: string|null }}
+ * Mints a new token.
+ * Requires URI (metadata) and initial price.
  */
 export function useMintToken() {
   const { signer } = useWallet();
   const { startTransaction, endTransaction } = useTransaction();
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [isPromptingWallet, setIsPromptingWallet] = useState(false);
+  const [isMining, setIsMining]                   = useState(false);
+  const [error, setError]                         = useState(null);
+  const [success, setSuccess]                     = useState(false);
 
-  const mint = useCallback(
-    async (metadata = "") => {
-      if (!signer) {
-        setError("Wallet not connected.");
-        return;
-      }
+  const mintToken = useCallback(async (tokenURI, priceInEth) => {
+    if (!signer) {
+      setError("Wallet not connected.");
+      return;
+    }
 
-      setIsLoading(true);
-      setError(null);
-      startTransaction();
+    setError(null);
+    setSuccess(false);
+    setIsPromptingWallet(true);
 
-      try {
-        const contract = new ethers.Contract(
-          CONTRACT_ADDRESS,
-          CONTRACT_ABI,
-          signer
-        );
+    try {
+      const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+      const priceInWei = ethers.parseEther(priceInEth.toString());
 
-        const tx = await contract.mintToken(metadata);
-        await tx.wait();
-      } catch (err) {
-        if (err.code === "ACTION_REJECTED") {
-          setError("Transaction rejected by user.");
-        } else {
-          setError("Failed to mint token. Please try again.");
-        }
-      } finally {
-        setIsLoading(false);
-        endTransaction();
-      }
-    },
-    [signer, startTransaction, endTransaction]
-  );
+      // Send transaction
+      const tx = await contract.mintToken(tokenURI, priceInWei, {
+        value: priceInWei
+      });
 
-  return { mint, isLoading, error };
+      setIsPromptingWallet(false);
+      setIsMining(true);
+      startTransaction(); // Trigger global UI toast
+
+      const receipt = await tx.wait();
+      if (receipt.status === 1) setSuccess(true);
+      else setError("Transaction failed on-chain.");
+
+    } catch (err) {
+      console.error("Mint error:", err);
+      setError(parseTransactionError(err));
+    } finally {
+      setIsPromptingWallet(false);
+      setIsMining(false);
+      endTransaction(); // Hide global UI toast
+    }
+  }, [signer, startTransaction, endTransaction]);
+
+  return { mintToken, isPromptingWallet, isMining, error, success };
 }

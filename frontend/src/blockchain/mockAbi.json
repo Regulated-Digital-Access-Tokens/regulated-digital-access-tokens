@@ -1,11 +1,11 @@
 [
   {
-    "_comment": "--- Custom Marketplace Functions (from README Shared API Blueprint) ---"
-  },
-  {
     "type": "function",
     "name": "mintToken",
-    "inputs": [],
+    "inputs": [
+      { "name": "tokenURI", "type": "string" },
+      { "name": "price",    "type": "uint256" }
+    ],
     "outputs": [],
     "stateMutability": "payable"
   },
@@ -39,30 +39,16 @@
   },
   {
     "type": "function",
-    "name": "getListing",
+    "name": "listings",
     "inputs": [
       { "name": "tokenId", "type": "uint256" }
     ],
     "outputs": [
-      { "name": "price",  "type": "uint256" },
-      { "name": "seller", "type": "address" }
+      { "name": "price",    "type": "uint256" },
+      { "name": "seller",   "type": "address" },
+      { "name": "isListed", "type": "bool" }
     ],
     "stateMutability": "view"
-  },
-  {
-    "_comment": "--- ADDED for Phase 2 (Q1: Option B) --- Protocol Architect must implement this on-chain getter. Confirm function name before integration."
-  },
-  {
-    "type": "function",
-    "name": "getActiveListingIds",
-    "inputs": [],
-    "outputs": [
-      { "name": "", "type": "uint256[]" }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "_comment": "--- Standard ERC-721 Read Functions ---"
   },
   {
     "type": "function",
@@ -87,14 +73,21 @@
     "stateMutability": "view"
   },
   {
-    "_comment": "--- ERC721Enumerable Functions (Q2: Option A) --- Protocol Architect must inherit from OpenZeppelin ERC721Enumerable."
+    "type": "function",
+    "name": "tokenURI",
+    "inputs": [
+      { "name": "tokenId", "type": "uint256" }
+    ],
+    "outputs": [
+      { "name": "", "type": "string" }
+    ],
+    "stateMutability": "view"
   },
   {
     "type": "function",
-    "name": "tokenOfOwnerByIndex",
+    "name": "mintPrices",
     "inputs": [
-      { "name": "owner", "type": "address" },
-      { "name": "index", "type": "uint256" }
+      { "name": "tokenId", "type": "uint256" }
     ],
     "outputs": [
       { "name": "", "type": "uint256" }
@@ -102,7 +95,42 @@
     "stateMutability": "view"
   },
   {
-    "_comment": "--- Standard ERC-721 Events ---"
+    "type": "event",
+    "name": "TokenMinted",
+    "inputs": [
+      { "name": "tokenId",   "type": "uint256", "indexed": true },
+      { "name": "creator",   "type": "address", "indexed": true },
+      { "name": "mintPrice", "type": "uint256", "indexed": false },
+      { "name": "tokenURI",  "type": "string",  "indexed": false }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "TokenListed",
+    "inputs": [
+      { "name": "tokenId", "type": "uint256", "indexed": true },
+      { "name": "seller",  "type": "address", "indexed": true },
+      { "name": "price",   "type": "uint256", "indexed": false }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "TokenSale",
+    "inputs": [
+      { "name": "tokenId",      "type": "uint256", "indexed": true },
+      { "name": "buyer",        "type": "address", "indexed": true },
+      { "name": "seller",       "type": "address", "indexed": true },
+      { "name": "salePrice",    "type": "uint256", "indexed": false },
+      { "name": "royaltyPaid",  "type": "uint256", "indexed": false }
+    ]
+  },
+  {
+    "type": "event",
+    "name": "ListingCancelled",
+    "inputs": [
+      { "name": "tokenId", "type": "uint256", "indexed": true },
+      { "name": "seller",  "type": "address", "indexed": true }
+    ]
   },
   {
     "type": "event",
