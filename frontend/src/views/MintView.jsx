@@ -1,49 +1,78 @@
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useMintToken } from "../blockchain/useMintToken";
 import DecryptedText from "../components/DecryptedText";
 import WaveBackground from "../components/WaveBackground";
 import SplitText from "../components/SplitText";
+import { compressImage } from "../utils/compressImage";
 
 /**
  * MintView
  *
  * contact-form-card pattern on a pale-stone section background.
  * Hero copy above the card, form inside the rounded white card.
+ * Supports optional image upload with auto-compression.
  */
 export default function MintView() {
   const { mintToken, isPromptingWallet, isMining, error, success } = useMintToken();
   const isLoading = isPromptingWallet || isMining;
   const [metadata, setMetadata] = useState("");
   const [price, setPrice] = useState("");
-  const [imageFile, setImageFile] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [imageBase64, setImageBase64] = useState("");
+  const [imagePreview, setImagePreview] = useState(null); // base64 data URL
+  const [isCompressing, setIsCompressing] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+  const fileInputRef = useRef(null);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-        setImageBase64(reader.result);
-      };
-      reader.readAsDataURL(file);
+  /** Process an image file — compress if needed, set preview */
+  const processImageFile = useCallback(async (file) => {
+    if (!file || !file.type.startsWith("image/")) return;
+
+    setIsCompressing(true);
+    try {
+      const compressed = await compressImage(file, 1024);
+      setImagePreview(compressed);
+    } catch (err) {
+      console.error("Image compression failed:", err);
+    } finally {
+      setIsCompressing(false);
     }
+  }, []);
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files?.[0];
+    if (file) processImageFile(file);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setDragActive(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) processImageFile(file);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setDragActive(true);
+  };
+
+  const handleDragLeave = () => setDragActive(false);
+
+  const removeImage = () => {
+    setImagePreview(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!price) return;
-    
-    // Package metadata and image into a JSON string
-    const finalMetadata = JSON.stringify({
-      name: `RAT #${Date.now()}`,
-      description: metadata,
-      image: imageBase64 || null
-    });
 
-    mintToken(finalMetadata, price);
+    // Build JSON tokenURI
+    const tokenData = { metadata: metadata || "" };
+    if (imagePreview) {
+      tokenData.image = imagePreview;
+    }
+    const tokenURI = JSON.stringify(tokenData);
+
+    mintToken(tokenURI, price);
   };
 
   return (
@@ -94,7 +123,7 @@ export default function MintView() {
             {/* Metadata input */}
             <div>
               <label className="form-label" htmlFor="metadata-input">
-                Description
+                Metadata
                 <span
                   className="text-caption"
                   style={{ marginLeft: "8px", fontWeight: 400 }}
@@ -111,13 +140,13 @@ export default function MintView() {
                 onChange={(e) => setMetadata(e.target.value)}
               />
               <p className="text-caption" style={{ marginTop: "6px" }}>
-                Attach an optional description to your token for on-chain identification.
+                Attach an optional metadata string to your token for on-chain identification.
               </p>
             </div>
 
             {/* Image upload */}
             <div>
-              <label className="form-label" htmlFor="image-input">
+              <label className="form-label">
                 Token Image
                 <span
                   className="text-caption"
@@ -126,40 +155,72 @@ export default function MintView() {
                   (optional)
                 </span>
               </label>
-              <div 
-                style={{ 
-                  border: "1px dashed var(--color-hairline)", 
-                  borderRadius: "var(--radius-sm)", 
-                  padding: "20px", 
-                  textAlign: "center",
-                  backgroundColor: "var(--color-surface-grey)",
-                  cursor: "pointer",
-                  position: "relative"
-                }}
-                onClick={() => document.getElementById("image-input").click()}
-              >
-                {imagePreview ? (
+
+              {!imagePreview ? (
+                <div
+                  className={`image-upload-zone ${dragActive ? "image-upload-zone--active" : ""}`}
+                  onClick={() => fileInputRef.current?.click()}
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  id="image-upload-zone"
+                >
+                  {isCompressing ? (
+                    <div style={{ textAlign: "center" }}>
+                      <div className="text-caption" style={{ color: "var(--color-slate)" }}>
+                        Compressing image…
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                        <circle cx="8.5" cy="8.5" r="1.5" />
+                        <polyline points="21 15 16 10 5 21" />
+                      </svg>
+                      <p className="text-caption" style={{ marginTop: "8px", color: "var(--color-slate)" }}>
+                        Drag & drop an image, or <span style={{ color: "var(--color-blue)", cursor: "pointer", fontWeight: 500 }}>browse</span>
+                      </p>
+                      <p className="text-caption" style={{ fontSize: "12px", marginTop: "4px" }}>
+                        Image will be compressed to a small thumbnail for on-chain storage
+                      </p>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <div className="image-preview-container">
                   <img 
                     src={imagePreview} 
-                    alt="Preview" 
-                    style={{ maxHeight: "150px", borderRadius: "var(--radius-xs)", margin: "0 auto" }} 
+                    alt="Token preview" 
+                    className="image-preview-thumb"
                   />
-                ) : (
-                  <div style={{ color: "var(--color-slate)", fontSize: "14px" }}>
-                    Click to upload an image
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p className="text-caption" style={{ color: "var(--color-ink)", fontWeight: 500 }}>
+                      Image attached
+                    </p>
+                    <p className="text-caption" style={{ fontSize: "12px" }}>
+                      {Math.round((imagePreview.length - imagePreview.indexOf(",") - 1) * 0.75 / 1024)}KB compressed
+                    </p>
                   </div>
-                )}
-                <input
-                  id="image-input"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  style={{ display: "none" }}
-                />
-              </div>
-              <p className="text-caption" style={{ marginTop: "6px" }}>
-                Add a visual identity to your regulated access token.
-              </p>
+                  <button
+                    type="button"
+                    onClick={removeImage}
+                    className="image-remove-btn"
+                    title="Remove image"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileSelect}
+                style={{ display: "none" }}
+                id="image-file-input"
+              />
             </div>
 
             {/* Price input */}
@@ -219,7 +280,7 @@ export default function MintView() {
             <button
               className="btn-primary"
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || isCompressing}
               id="mint-btn"
               style={{ alignSelf: "flex-start", marginTop: "8px" }}
             >

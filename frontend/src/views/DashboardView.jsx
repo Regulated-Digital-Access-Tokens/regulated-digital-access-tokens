@@ -25,90 +25,89 @@ function InventorySkeleton() {
 /* --------------------------------------------------------------------------
    Single owned-token inventory card
    -------------------------------------------------------------------------- */
-function InventoryCard({ token, onList, isListing, price, onPriceChange }) {
-  const { tokenId, tokenURI } = token;
-
-  // Parse metadata JSON safely
-  let metadata = { description: tokenURI, image: null };
-  try {
-    if (tokenURI.startsWith("{")) {
-      metadata = JSON.parse(tokenURI);
-    }
-  } catch (e) {
-    // Fallback to plain string
-  }
-
-  const displayImage = metadata.image || null;
-  const displayDesc = metadata.description || `Token #${tokenId}`;
-
+function InventoryCard({ tokenId, image, onList, isListing, price, onPriceChange }) {
   return (
     <div 
       className="form-card" 
       id={`owned-${tokenId}`}
       style={{ 
-        maxWidth: "100%", // Override max-width for grid
-        padding: "32px",
+        maxWidth: "100%",
+        padding: "0",
         display: "flex",
         flexDirection: "column",
-        gap: "24px"
+        gap: "0",
+        overflow: "hidden"
       }}
     >
-      <div style={{ textAlign: "left" }}>
-        <span className="text-mono-label" style={{ color: "var(--color-muted)", fontSize: "12px", display: "block", marginBottom: "8px" }}>
-          OWNED ASSET
-        </span>
-        <p
-          className="text-card-heading"
-          style={{ fontWeight: 500, color: "var(--color-near-black)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
-          title={displayDesc}
-        >
-          {displayDesc}
-        </p>
+      {/* Token image or placeholder */}
+      <div
+        style={{
+          height: "160px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: image ? "transparent" : "var(--color-near-black)",
+          overflow: "hidden",
+          borderRadius: "22px 22px 0 0"
+        }}
+      >
+        {image ? (
+          <img src={image} alt={`Token ${tokenId}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        ) : (
+          <span className="text-mono-label" style={{ opacity: 0.4, color: "var(--color-white)" }}>
+            TOKEN #{tokenId}
+          </span>
+        )}
       </div>
 
-      {/* Image if available */}
-      {displayImage && (
-        <div 
-          className="media-card" 
-          style={{ height: "140px", width: "100%", borderRadius: "var(--radius-sm)", overflow: "hidden", backgroundColor: "var(--color-near-black)" }}
-        >
-          <img src={displayImage} alt={displayDesc} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-        </div>
-      )}
-
-      {/* Divider */}
-      <div className="divider" style={{ margin: "0 -32px" }} />
-
-      {/* List form */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-        <div>
-          <label className="form-label" htmlFor={`price-input-${tokenId}`}>
-            Listing Price (ETH)
-          </label>
-          <input
-            className="form-input"
-            id={`price-input-${tokenId}`}
-            type="number"
-            min="0"
-            step="0.001"
-            placeholder="e.g. 0.05"
-            value={price || ""}
-            onChange={(e) => onPriceChange(tokenId, e.target.value)}
-          />
-          <p className="text-caption" style={{ marginTop: "6px" }}>
-            Set the price for other users to buy this token.
+      {/* Card body */}
+      <div style={{ padding: "24px 32px 32px", display: "flex", flexDirection: "column", gap: "24px" }}>
+        <div style={{ textAlign: "left" }}>
+          <span className="text-mono-label" style={{ color: "var(--color-muted)", fontSize: "12px", display: "block", marginBottom: "8px" }}>
+            OWNED ASSET
+          </span>
+          <p
+            className="text-card-heading"
+            style={{ fontWeight: 500, color: "var(--color-near-black)" }}
+          >
+            Token #{tokenId}
           </p>
         </div>
-        
-        <button
-          className="btn-primary"
-          style={{ width: "100%", justifyContent: "center", marginTop: "8px" }}
-          disabled={isListing || !price}
-          onClick={() => onList(tokenId, price)}
-          id={`list-btn-${tokenId}`}
-        >
-          {isListing ? "Processing…" : "List on Marketplace"}
-        </button>
+
+        {/* Divider */}
+        <div className="divider" style={{ margin: "0 -32px" }} />
+
+        {/* List form */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+          <div>
+            <label className="form-label" htmlFor={`price-input-${tokenId}`}>
+              Listing Price (ETH)
+            </label>
+            <input
+              className="form-input"
+              id={`price-input-${tokenId}`}
+              type="number"
+              min="0"
+              step="0.001"
+              placeholder="e.g. 0.05"
+              value={price || ""}
+              onChange={(e) => onPriceChange(tokenId, e.target.value)}
+            />
+            <p className="text-caption" style={{ marginTop: "6px" }}>
+              Set the price for other users to buy this token.
+            </p>
+          </div>
+          
+          <button
+            className="btn-primary"
+            style={{ width: "100%", justifyContent: "center", marginTop: "8px" }}
+            disabled={isListing || !price}
+            onClick={() => onList(tokenId, price)}
+            id={`list-btn-${tokenId}`}
+          >
+            {isListing ? "Processing…" : "List on Marketplace"}
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -251,7 +250,8 @@ export default function DashboardView() {
               {ownedTokenIds.map((token) => (
                 <InventoryCard
                   key={token.tokenId}
-                  token={token}
+                  tokenId={token.tokenId}
+                  image={token.image}
                   price={prices[token.tokenId]}
                   onPriceChange={handlePriceChange}
                   onList={listToken}

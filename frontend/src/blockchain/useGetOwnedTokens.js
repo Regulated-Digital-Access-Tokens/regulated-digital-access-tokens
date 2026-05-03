@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useWallet } from "./useWallet";
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "./contractConfig";
+import { parseTokenURI } from "./parseTokenURI";
 import { ethers } from "ethers";
 
 /**
@@ -57,10 +58,13 @@ export function useGetOwnedTokens(ownerAddress) {
               const uri = await contract.tokenURI(tokenId);
               const mintPrice = await contract.mintPrices(tokenId);
               const { isListed, price } = await contract.listings(tokenId);
+              const { metadata, image } = parseTokenURI(uri);
 
               return {
                 tokenId: tokenId.toString(),
                 tokenURI: uri,
+                metadata,
+                image,
                 mintPrice: ethers.formatEther(mintPrice),
                 isListed,
                 listPrice: isListed ? ethers.formatEther(price) : null

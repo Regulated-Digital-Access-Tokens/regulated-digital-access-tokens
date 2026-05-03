@@ -22,18 +22,6 @@ function ListingSkeleton() {
    Single listing card — product-card pattern from DESIGN.md
    -------------------------------------------------------------------------- */
 function ListingCard({ listing, onBuy, isBuying }) {
-  // Parse metadata JSON safely
-  let metadata = { description: listing.tokenURI, image: null };
-  try {
-    if (listing.tokenURI.startsWith("{")) {
-      metadata = JSON.parse(listing.tokenURI);
-    }
-  } catch (e) {
-    // Fallback to plain string
-  }
-
-  const displayImage = metadata.image || null;
-  const displayDesc = metadata.description || `Token #${listing.tokenId}`;
   return (
     <div className="product-card" id={`listing-${listing.tokenId}`}>
       {/* Media placeholder — 22px radius per image treatment rules */}
@@ -41,8 +29,8 @@ function ListingCard({ listing, onBuy, isBuying }) {
         className="media-card"
         style={{ height: "160px", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", backgroundColor: "var(--color-near-black)", overflow: "hidden" }}
       >
-        {displayImage ? (
-          <img src={displayImage} alt={`Token ${listing.tokenId}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        {listing.image ? (
+          <img src={listing.image} alt={`Token ${listing.tokenId}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         ) : (
           <span className="text-mono-label" style={{ opacity: 0.4, color: "var(--color-white)" }}>
             TOKEN #{listing.tokenId}
@@ -55,10 +43,9 @@ function ListingCard({ listing, onBuy, isBuying }) {
         <div style={{ flex: 1, minWidth: 0 }}>
           <p
             className="text-feature-heading"
-            style={{ fontSize: "16px", fontWeight: 500, marginBottom: "2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
-            title={displayDesc}
+            style={{ fontSize: "16px", fontWeight: 500, marginBottom: "2px", truncate: true }}
           >
-            {displayDesc}
+            Token #{listing.tokenId}
           </p>
           <p className="text-caption" style={{ fontFamily: "var(--font-mono)", letterSpacing: "0.05px" }}>
             {listing.seller.slice(0, 6)}…{listing.seller.slice(-4)}
