@@ -78,7 +78,29 @@ export function useGetListings() {
 
   useEffect(() => {
     fetchListings();
-  }, [fetchListings]);
+
+    if (!provider) return;
+
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+
+    const onEvent = () => {
+      // Small delay to ensure RPC nodes have indexed the new state
+      setTimeout(() => {
+        fetchListings();
+      }, 1000);
+    };
+
+    // Listen to marketplace events to refresh listings
+    contract.on("TokenListed", onEvent);
+    contract.on("TokenSale", onEvent);
+    contract.on("ListingCancelled", onEvent);
+
+    return () => {
+      contract.off("TokenListed", onEvent);
+      contract.off("TokenSale", onEvent);
+      contract.off("ListingCancelled", onEvent);
+    };
+  }, [fetchListings, provider]);
 
   return { listings, isLoading, error, refetch: fetchListings };
 }

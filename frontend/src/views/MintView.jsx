@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useMintToken } from "../blockchain/useMintToken";
 import DecryptedText from "../components/DecryptedText";
+import WaveBackground from "../components/WaveBackground";
+import SplitText from "../components/SplitText";
 
 /**
  * MintView
@@ -13,32 +15,55 @@ export default function MintView() {
   const isLoading = isPromptingWallet || isMining;
   const [metadata, setMetadata] = useState("");
   const [price, setPrice] = useState("");
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageBase64, setImageBase64] = useState("");
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+        setImageBase64(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!price) return;
-    mintToken(metadata, price);
+    
+    // Package metadata and image into a JSON string
+    const finalMetadata = JSON.stringify({
+      name: `RAT #${Date.now()}`,
+      description: metadata,
+      image: imageBase64 || null
+    });
+
+    mintToken(finalMetadata, price);
   };
 
   return (
     <div>
       {/* Hero — white canvas with centered type */}
-      <section
-        style={{
-          backgroundColor: "transparent",
-          padding: "80px 24px 64px",
-          textAlign: "center",
-        }}
-      >
-        <div className="section-container" style={{ maxWidth: "600px" }}>
+      <section className="feature-band feature-band--blue">
+        <WaveBackground />
+        <div className="section-container" style={{ maxWidth: "600px", padding: "120px 24px 64px", position: "relative", zIndex: 1, textAlign: "center" }}>
           <DecryptedText
             text="The Genesis Point"
-            className="text-product-display"
+            className="text-product-display text-white"
             style={{ marginBottom: "20px", display: "block", textAlign: "center", width: "100%" }}
+            scrambleColor="rgba(255,255,255,0.85)"
           />
-          <p className="text-body-lg subhead-hover subhead-hover--light subhead-blur subhead-blur--light" style={{ color: "var(--color-slate)", maxWidth: "420px", margin: "0 auto" }}>
-            Create and deploy your access tokens on the Ethereum network.
-            Simple, secure, and permanent.
+          <p className="text-body-lg" style={{ color: "rgba(255,255,255,0.65)", maxWidth: "420px", margin: "0 auto", textAlign: "center", cursor: "default" }}>
+            <SplitText 
+              text="Create and deploy your access tokens on the Ethereum network. Simple, secure, and permanent." 
+              charClassName="char-item" 
+              animationType="wavy"
+            />
           </p>
         </div>
       </section>
@@ -50,6 +75,7 @@ export default function MintView() {
           padding: "64px 24px 80px",
           display: "flex",
           justifyContent: "center",
+          minHeight: "50vh"
         }}
       >
         <div className="form-card" id="mint-form-container">
@@ -68,7 +94,7 @@ export default function MintView() {
             {/* Metadata input */}
             <div>
               <label className="form-label" htmlFor="metadata-input">
-                Metadata
+                Description
                 <span
                   className="text-caption"
                   style={{ marginLeft: "8px", fontWeight: 400 }}
@@ -85,7 +111,54 @@ export default function MintView() {
                 onChange={(e) => setMetadata(e.target.value)}
               />
               <p className="text-caption" style={{ marginTop: "6px" }}>
-                Attach an optional metadata string to your token for on-chain identification.
+                Attach an optional description to your token for on-chain identification.
+              </p>
+            </div>
+
+            {/* Image upload */}
+            <div>
+              <label className="form-label" htmlFor="image-input">
+                Token Image
+                <span
+                  className="text-caption"
+                  style={{ marginLeft: "8px", fontWeight: 400 }}
+                >
+                  (optional)
+                </span>
+              </label>
+              <div 
+                style={{ 
+                  border: "1px dashed var(--color-hairline)", 
+                  borderRadius: "var(--radius-sm)", 
+                  padding: "20px", 
+                  textAlign: "center",
+                  backgroundColor: "var(--color-surface-grey)",
+                  cursor: "pointer",
+                  position: "relative"
+                }}
+                onClick={() => document.getElementById("image-input").click()}
+              >
+                {imagePreview ? (
+                  <img 
+                    src={imagePreview} 
+                    alt="Preview" 
+                    style={{ maxHeight: "150px", borderRadius: "var(--radius-xs)", margin: "0 auto" }} 
+                  />
+                ) : (
+                  <div style={{ color: "var(--color-slate)", fontSize: "14px" }}>
+                    Click to upload an image
+                  </div>
+                )}
+                <input
+                  id="image-input"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  style={{ display: "none" }}
+                />
+              </div>
+              <p className="text-caption" style={{ marginTop: "6px" }}>
+                Add a visual identity to your regulated access token.
               </p>
             </div>
 
@@ -156,8 +229,9 @@ export default function MintView() {
         </div>
       </section>
 
-      {/* Capability band — informational, dark-feature-band style */}
-      <section className="feature-band" style={{ padding: "56px 0" }}>
+      {/* Capability band — informational, blue theme */}
+      <section className="feature-band feature-band--blue" style={{ padding: "56px 0" }}>
+        <WaveBackground />
         <div className="section-container">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
