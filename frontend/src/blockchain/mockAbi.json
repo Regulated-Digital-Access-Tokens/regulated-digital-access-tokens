@@ -1,0 +1,116 @@
+[
+  {
+    "_comment": "--- Custom Marketplace Functions (from README Shared API Blueprint) ---"
+  },
+  {
+    "type": "function",
+    "name": "mintToken",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "listToken",
+    "inputs": [
+      { "name": "tokenId", "type": "uint256" },
+      { "name": "price",   "type": "uint256" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "buyToken",
+    "inputs": [
+      { "name": "tokenId", "type": "uint256" }
+    ],
+    "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "cancelListing",
+    "inputs": [
+      { "name": "tokenId", "type": "uint256" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "getListing",
+    "inputs": [
+      { "name": "tokenId", "type": "uint256" }
+    ],
+    "outputs": [
+      { "name": "price",  "type": "uint256" },
+      { "name": "seller", "type": "address" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "_comment": "--- ADDED for Phase 2 (Q1: Option B) --- Protocol Architect must implement this on-chain getter. Confirm function name before integration."
+  },
+  {
+    "type": "function",
+    "name": "getActiveListingIds",
+    "inputs": [],
+    "outputs": [
+      { "name": "", "type": "uint256[]" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "_comment": "--- Standard ERC-721 Read Functions ---"
+  },
+  {
+    "type": "function",
+    "name": "ownerOf",
+    "inputs": [
+      { "name": "tokenId", "type": "uint256" }
+    ],
+    "outputs": [
+      { "name": "", "type": "address" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "balanceOf",
+    "inputs": [
+      { "name": "owner", "type": "address" }
+    ],
+    "outputs": [
+      { "name": "", "type": "uint256" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "_comment": "--- ERC721Enumerable Functions (Q2: Option A) --- Protocol Architect must inherit from OpenZeppelin ERC721Enumerable."
+  },
+  {
+    "type": "function",
+    "name": "tokenOfOwnerByIndex",
+    "inputs": [
+      { "name": "owner", "type": "address" },
+      { "name": "index", "type": "uint256" }
+    ],
+    "outputs": [
+      { "name": "", "type": "uint256" }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "_comment": "--- Standard ERC-721 Events ---"
+  },
+  {
+    "type": "event",
+    "name": "Transfer",
+    "inputs": [
+      { "name": "from",    "type": "address", "indexed": true },
+      { "name": "to",      "type": "address", "indexed": true },
+      { "name": "tokenId", "type": "uint256", "indexed": true }
+    ]
+  }
+]
