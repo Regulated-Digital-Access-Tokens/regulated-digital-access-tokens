@@ -89,7 +89,8 @@ function ListingCard({ listing, onBuy, isBuying }) {
    -------------------------------------------------------------------------- */
 export default function MarketplaceView() {
   const { listings, isLoading, error } = useGetListings();
-  const { buy, isLoading: isBuying, error: buyError } = useBuyToken();
+  const { buyToken, isPromptingWallet, isMining, error: buyError } = useBuyToken();
+  const isBuying = isPromptingWallet || isMining;
 
   return (
     <div>
@@ -176,7 +177,7 @@ export default function MarketplaceView() {
                 <ListingCard
                   key={listing.tokenId}
                   listing={listing}
-                  onBuy={buy}
+                  onBuy={buyToken}
                   isBuying={isBuying}
                 />
               ))}

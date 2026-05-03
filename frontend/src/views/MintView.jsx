@@ -9,12 +9,15 @@ import DecryptedText from "../components/DecryptedText";
  * Hero copy above the card, form inside the rounded white card.
  */
 export default function MintView() {
-  const { mint, isLoading, error } = useMintToken();
+  const { mintToken, isPromptingWallet, isMining, error, success } = useMintToken();
+  const isLoading = isPromptingWallet || isMining;
   const [metadata, setMetadata] = useState("");
+  const [price, setPrice] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    mint(metadata);
+    if (!price) return;
+    mintToken(metadata, price);
   };
 
   return (
@@ -86,6 +89,27 @@ export default function MintView() {
               </p>
             </div>
 
+            {/* Price input */}
+            <div>
+              <label className="form-label" htmlFor="price-input">
+                Initial Price (ETH)
+              </label>
+              <input
+                className="form-input"
+                id="price-input"
+                type="number"
+                step="0.0001"
+                min="0.0001"
+                required
+                placeholder="e.g. 0.05"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
+              <p className="text-caption" style={{ marginTop: "6px" }}>
+                Set the initial price for minting your token.
+              </p>
+            </div>
+
             {/* Error display */}
             {error && (
               <div
@@ -99,6 +123,22 @@ export default function MintView() {
                 }}
               >
                 {error}
+              </div>
+            )}
+
+            {/* Success display */}
+            {success && (
+              <div
+                style={{
+                  padding: "12px 16px",
+                  borderRadius: "var(--radius-xs)",
+                  border: "1px solid rgba(0,179,0,0.2)",
+                  backgroundColor: "#f0fff0",
+                  color: "green",
+                  fontSize: "14px",
+                }}
+              >
+                Token minted successfully!
               </div>
             )}
 
