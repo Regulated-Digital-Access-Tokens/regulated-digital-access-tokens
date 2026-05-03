@@ -250,38 +250,51 @@ export default function App() {
           }}
         >
           <div className="section-container">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pb-10"
-                 style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
-              <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 pb-12"
+                 style={{ borderBottom: "1px solid rgba(255,255,255,0.08)" }}>
+              <div className="col-span-1 md:col-span-2">
                 <p style={{
                   fontFamily: "var(--font-display)",
-                  fontSize: "16px",
+                  fontSize: "20px",
                   fontWeight: 800,
                   color: "var(--color-white)",
-                  marginBottom: "8px",
+                  marginBottom: "16px",
                   textTransform: "uppercase",
-                  letterSpacing: "1px",
+                  letterSpacing: "2px",
                 }}>
                   Regulated Access Tokens
                 </p>
-                <p className="text-micro">
-                  © 2024 RAT. Built on Ethereum.
+                <p className="text-body" style={{ color: "rgba(255,255,255,0.5)", maxWidth: "360px", lineHeight: "1.6" }}>
+                  A decentralized platform for secure, compliant, and transparent digital access management on the Ethereum network.
                 </p>
               </div>
+              
               <div>
-                <p className="footer-col-heading">Legal</p>
-                <button className="footer-link">Terms</button>
-                <button className="footer-link">Privacy</button>
+                <p className="footer-col-heading">Course Project</p>
+                <p className="text-micro" style={{ color: "rgba(255,255,255,0.4)", lineHeight: "1.8" }}>
+                  Blockchain Technology Course<br />
+                  Academic Year 2025-2026
+                </p>
               </div>
+
               <div>
-                <p className="footer-col-heading">Resources</p>
-                <button className="footer-link">Support</button>
-                <button className="footer-link">Docs</button>
+                <p className="footer-col-heading">The Team</p>
+                <div className="flex flex-col gap-2">
+                  <span className="text-micro" style={{ color: "rgba(255,255,255,0.6)" }}>Ayan</span>
+                  <span className="text-micro" style={{ color: "rgba(255,255,255,0.6)" }}>Vivek</span>
+                  <span className="text-micro" style={{ color: "rgba(255,255,255,0.6)" }}>Ishan</span>
+                </div>
               </div>
-              <div>
-                <p className="footer-col-heading">Community</p>
-                <button className="footer-link">Twitter</button>
-                <button className="footer-link">Discord</button>
+            </div>
+
+            <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+              <p className="text-micro" style={{ color: "rgba(255,255,255,0.3)", letterSpacing: "0.5px" }}>
+                © 2026 REGULATED ACCESS TOKENS. ALL RIGHTS RESERVED.
+              </p>
+              <div className="flex items-center gap-2 text-micro" style={{ color: "rgba(255,255,255,0.5)" }}>
+                <span>Made with</span>
+                <span style={{ color: "#ff4d4d", fontSize: "14px" }}>♥</span>
+                <span>by Ayan, Vivek and Ishan</span>
               </div>
             </div>
           </div>
