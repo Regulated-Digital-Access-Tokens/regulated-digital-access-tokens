@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { ethers } from "ethers";
 import { useWallet } from "./useWallet";
 import { CONTRACT_ADDRESS, CONTRACT_ABI } from "./contractConfig";
+import { parseTokenURI } from "./parseTokenURI";
 
 /**
  * useGetListings
@@ -52,6 +53,7 @@ export function useGetListings() {
 
             const uri = await contract.tokenURI(tokenId);
             const mintPrice = await contract.mintPrices(tokenId);
+            const { metadata, image } = parseTokenURI(uri);
 
             return {
               tokenId:  tokenId.toString(),
@@ -59,6 +61,8 @@ export function useGetListings() {
               priceRaw: price,
               seller:   seller,
               tokenURI: uri,
+              metadata,
+              image,
               mintPrice: ethers.formatEther(mintPrice)
             };
           } catch {

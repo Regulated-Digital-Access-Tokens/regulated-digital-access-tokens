@@ -16,7 +16,16 @@ export function parseTransactionError(err) {
     return "Insufficient ETH to complete this transaction.";
   }
 
-  // 3. Ethers v6 contract revert parsing
+  // 3. Gas estimation failure (often means tx would revert, or data too large)
+  if (err.code === "UNPREDICTABLE_GAS_LIMIT" || err.code === "CALL_EXCEPTION") {
+    const inner = err.reason || err.shortMessage || err.message || "";
+    if (inner.includes("gas")) {
+      return "Transaction requires too much gas. If you attached an image, try a smaller one.";
+    }
+    return `Transaction would fail: ${inner || "unknown reason"}`;
+  }
+
+  // 4. Ethers v6 contract revert parsing
   // Ethers usually attaches the revert reason to the error object.
   const reason = err.reason || err.shortMessage || err.message;
 
@@ -33,6 +42,9 @@ export function parseTransactionError(err) {
     if (reason.includes("Not token owner") || reason.includes("Not listing seller")) {
       return "You do not have permission to perform this action.";
     }
+    if (reason.includes("intrinsic gas too low") || reason.includes("gas required exceeds")) {
+      return "Transaction data is too large. Try using a smaller image or no image.";
+    }
     
     // Fallback for other specific revert strings
     const match = reason.match(/reverted with reason string '([^']+)'/);
@@ -41,7 +53,11 @@ export function parseTransactionError(err) {
     }
   }
 
-  // 4. Ultimate fallback
+  // 5. Ultimate fallback — include the actual message for debugging
   console.error("Unhandled Web3 Error:", err);
+  const fallbackMsg = err.shortMessage || err.reason || err.message || "";
+  if (fallbackMsg) {
+    return `Blockchain error: ${fallbackMsg.slice(0, 200)}`;
+  }
   return "An unexpected blockchain error occurred. Please try again.";
 }
