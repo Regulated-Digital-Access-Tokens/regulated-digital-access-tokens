@@ -82,7 +82,8 @@ function InventoryCard({ tokenId, onList, isListing, price, onPriceChange }) {
 export default function DashboardView() {
   const { address, isConnected } = useWallet();
   const { ownedTokenIds, isLoading, error } = useGetOwnedTokens(address);
-  const { list, isLoading: isListing, error: listError } = useListToken();
+  const { listToken, isPromptingWallet, isMining, error: listError } = useListToken();
+  const isListing = isPromptingWallet || isMining;
 
   // Per-token price state
   const [prices, setPrices] = useState({});
@@ -174,13 +175,13 @@ export default function DashboardView() {
           {/* Inventory grid */}
           {isConnected && !isLoading && !error && ownedTokenIds.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6" id="dashboard-grid">
-              {ownedTokenIds.map((tokenId) => (
+              {ownedTokenIds.map((token) => (
                 <InventoryCard
-                  key={tokenId}
-                  tokenId={tokenId}
-                  price={prices[tokenId]}
+                  key={token.tokenId}
+                  tokenId={token.tokenId}
+                  price={prices[token.tokenId]}
                   onPriceChange={handlePriceChange}
-                  onList={list}
+                  onList={listToken}
                   isListing={isListing}
                 />
               ))}

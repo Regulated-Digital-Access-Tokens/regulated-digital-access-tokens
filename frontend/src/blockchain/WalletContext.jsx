@@ -5,7 +5,6 @@ import { ethers } from "ethers";
 // Supported networks. Add more EVM chain IDs here if needed later.
 // ---------------------------------------------------------------------------
 const SUPPORTED_CHAIN_IDS = {
-  31337: "Hardhat Local",
   11155111: "Sepolia Testnet",
 };
 
