@@ -6,12 +6,11 @@ import { CONTRACT_ADDRESS, CONTRACT_ABI } from "./contractConfig";
 import { parseTransactionError } from "./errorHandler";
 
 /**
- * useBuyToken
+ * useCancelListing
  *
- * Buys a listed token.
- * Automatically handles msg.value based on the current listing price.
+ * Cancels an active listing.
  */
-export function useBuyToken() {
+export function useCancelListing() {
   const { signer } = useWallet();
   const { startTransaction, endTransaction } = useTransaction();
 
@@ -20,7 +19,7 @@ export function useBuyToken() {
   const [error, setError]                         = useState(null);
   const [success, setSuccess]                     = useState(false);
 
-  const buyToken = useCallback(async (tokenId) => {
+  const cancelListing = useCallback(async (tokenId) => {
     if (!signer) {
       setError("Wallet not connected.");
       return;
@@ -33,17 +32,7 @@ export function useBuyToken() {
     try {
       const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
-      // Fetch the current listing to get the required price
-      const { price, isListed } = await contract.listings(tokenId);
-      
-      if (!isListed) {
-        throw new Error("Token is no longer listed for sale.");
-      }
-
-      // Execute purchase
-      const tx = await contract.buyToken(tokenId, {
-        value: price
-      });
+      const tx = await contract.cancelListing(tokenId);
 
       setIsPromptingWallet(false);
       setIsMining(true);
@@ -54,13 +43,8 @@ export function useBuyToken() {
       else setError("Transaction failed on-chain.");
 
     } catch (err) {
-      console.error("Purchase error:", err);
-      // We manually threw an Error above if it wasn't listed, so we check for that first.
-      if (err.message === "Token is no longer listed for sale.") {
-        setError(err.message);
-      } else {
-        setError(parseTransactionError(err));
-      }
+      console.error("Cancel listing error:", err);
+      setError(parseTransactionError(err));
     } finally {
       setIsPromptingWallet(false);
       setIsMining(false);
@@ -68,5 +52,5 @@ export function useBuyToken() {
     }
   }, [signer, startTransaction, endTransaction]);
 
-  return { buyToken, isPromptingWallet, isMining, error, success };
+  return { cancelListing, isPromptingWallet, isMining, error, success };
 }

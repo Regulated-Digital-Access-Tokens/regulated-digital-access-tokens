@@ -9,7 +9,7 @@ import mockAbi from "./mockAbi.json";
 // the terminal will print: "Contract deployed to: 0x..."
 // Paste that address here and set IS_MOCK_ABI to false.
 // ---------------------------------------------------------------------------
-export const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000";
+export const CONTRACT_ADDRESS = "0x6B37969185920d59234b5Dcf5Bf7Fa25fdA794d3";
 
 // ---------------------------------------------------------------------------
 // ABI SOURCE FLAG
