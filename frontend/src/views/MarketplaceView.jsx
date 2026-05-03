@@ -1,12 +1,9 @@
 import { useGetListings } from "../blockchain/useGetListings";
 import { useBuyToken } from "../blockchain/useBuyToken";
 import DecryptedText from "../components/DecryptedText";
-
-const DUMMY_LISTINGS = [
-  { tokenId: "9991", price: "0.25", priceRaw: "250000000000000000", seller: "0xAbstractGlass", image: "/assets/token_card_1_1777824644342.png" },
-  { tokenId: "9992", price: "1.50", priceRaw: "1500000000000000000", seller: "0xHoloGeo", image: "/assets/token_card_2_1777824662613.png" },
-  { tokenId: "9993", price: "0.08", priceRaw: "80000000000000000", seller: "0xMetallicVault", image: "/assets/token_card_3_1777824676332.png" }
-];
+import Lottie from "lottie-react";
+import removeItemAnim from "../../public/assets/remove-item.json";
+import SnakeMarquee from "../components/SnakeMarquee";
 
 /* --------------------------------------------------------------------------
    Skeleton card shown while listings are loading
@@ -25,6 +22,18 @@ function ListingSkeleton() {
    Single listing card — product-card pattern from DESIGN.md
    -------------------------------------------------------------------------- */
 function ListingCard({ listing, onBuy, isBuying }) {
+  // Parse metadata JSON safely
+  let metadata = { description: listing.tokenURI, image: null };
+  try {
+    if (listing.tokenURI.startsWith("{")) {
+      metadata = JSON.parse(listing.tokenURI);
+    }
+  } catch (e) {
+    // Fallback to plain string
+  }
+
+  const displayImage = metadata.image || null;
+  const displayDesc = metadata.description || `Token #${listing.tokenId}`;
   return (
     <div className="product-card" id={`listing-${listing.tokenId}`}>
       {/* Media placeholder — 22px radius per image treatment rules */}
@@ -32,8 +41,8 @@ function ListingCard({ listing, onBuy, isBuying }) {
         className="media-card"
         style={{ height: "160px", display: "flex", alignItems: "center", justifyContent: "center", position: "relative", backgroundColor: "var(--color-near-black)", overflow: "hidden" }}
       >
-        {listing.image ? (
-          <img src={listing.image} alt={`Token ${listing.tokenId}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+        {displayImage ? (
+          <img src={displayImage} alt={`Token ${listing.tokenId}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         ) : (
           <span className="text-mono-label" style={{ opacity: 0.4, color: "var(--color-white)" }}>
             TOKEN #{listing.tokenId}
@@ -46,9 +55,10 @@ function ListingCard({ listing, onBuy, isBuying }) {
         <div style={{ flex: 1, minWidth: 0 }}>
           <p
             className="text-feature-heading"
-            style={{ fontSize: "16px", fontWeight: 500, marginBottom: "2px", truncate: true }}
+            style={{ fontSize: "16px", fontWeight: 500, marginBottom: "2px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}
+            title={displayDesc}
           >
-            Token #{listing.tokenId}
+            {displayDesc}
           </p>
           <p className="text-caption" style={{ fontFamily: "var(--font-mono)", letterSpacing: "0.05px" }}>
             {listing.seller.slice(0, 6)}…{listing.seller.slice(-4)}
@@ -94,15 +104,9 @@ export default function MarketplaceView() {
 
   return (
     <div>
-      {/* Hero band — centered text, large empty space above grid */}
-      <section
-        style={{
-          backgroundColor: "transparent",
-          padding: "80px 24px 64px",
-          textAlign: "center",
-        }}
-      >
-        <div className="section-container" style={{ maxWidth: "800px" }}>
+      {/* Hero — transparent with dot matrix background */}
+      <section className="feature-band" style={{ backgroundColor: "transparent", position: "relative" }}>
+        <div className="section-container" style={{ padding: "120px 24px 64px", position: "relative", zIndex: 1, maxWidth: "800px", textAlign: "center" }}>
           <DecryptedText
             text="The Global Marketplace"
             className="text-product-display"
@@ -119,8 +123,9 @@ export default function MarketplaceView() {
       <div className="divider" />
 
       {/* Content section */}
-      <section style={{ padding: "56px 0 80px", backgroundColor: "var(--color-white)", position: "relative", zIndex: 10 }}>
-        <div className="section-container">
+      <section style={{ padding: "80px 0 120px", backgroundColor: "var(--color-white)", position: "relative", overflow: "hidden", minHeight: "50vh" }}>
+        <SnakeMarquee />
+        <div className="section-container" style={{ position: "relative", zIndex: 1, pointerEvents: "none" }}>
           {/* Error banners */}
           {buyError && (
             <div className="status-strip--error mb-6" style={{ padding: "12px 16px", marginBottom: "24px", borderRadius: "var(--radius-xs)", border: "1px solid rgba(179,0,0,0.2)", backgroundColor: "#fff0f0", color: "var(--color-error)", fontSize: "14px" }}>
@@ -130,7 +135,7 @@ export default function MarketplaceView() {
 
           {/* Loading state — skeleton grid */}
           {isLoading && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6" aria-label="Loading listings">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6" aria-label="Loading listings" style={{ pointerEvents: "auto" }}>
               {[1, 2, 3].map((i) => <ListingSkeleton key={i} />)}
             </div>
           )}
@@ -142,28 +147,28 @@ export default function MarketplaceView() {
             </div>
           )}
 
-          {/* Empty state or Dummy Cards */}
+          {/* Empty state */}
           {!isLoading && !error && listings.length === 0 && (
-            <div>
-              <div style={{ textAlign: "center", padding: "40px 0 60px" }}>
-                <p className="text-body-lg" style={{ color: "var(--color-muted)" }}>
-                  No tokens are currently listed for sale on the blockchain.
-                </p>
-                <p className="text-caption" style={{ marginTop: "8px" }}>
-                  Here are some sample tokens so you can see how the UI looks:
-                </p>
+            <div 
+              className="form-card" 
+              style={{ 
+                margin: "40px auto", 
+                textAlign: "center",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                pointerEvents: "auto"
+              }}
+            >
+              <div style={{ width: "120px", height: "120px", marginBottom: "16px" }}>
+                <Lottie animationData={removeItemAnim} loop={true} speed={0.8} />
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {DUMMY_LISTINGS.map((listing) => (
-                  <ListingCard
-                    key={listing.tokenId}
-                    listing={listing}
-                    onBuy={(id) => alert(`This is a sample token (${id}). Connect your wallet and list real tokens to buy them.`)}
-                    isBuying={false}
-                  />
-                ))}
-              </div>
+              <p className="text-body-lg" style={{ color: "var(--color-ink)", fontWeight: 500 }}>
+                No tokens are currently listed for sale.
+              </p>
+              <p className="text-caption" style={{ marginTop: "8px", maxWidth: "320px" }}>
+                The marketplace is currently waiting for new assets. Check back later or list your own tokens!
+              </p>
             </div>
           )}
 
@@ -172,6 +177,7 @@ export default function MarketplaceView() {
             <div
               className="grid grid-cols-1 md:grid-cols-3 gap-6"
               id="marketplace-grid"
+              style={{ pointerEvents: "auto" }}
             >
               {listings.map((listing) => (
                 <ListingCard

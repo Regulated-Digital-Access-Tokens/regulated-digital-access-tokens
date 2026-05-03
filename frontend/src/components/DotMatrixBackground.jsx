@@ -9,9 +9,37 @@ export default function DotMatrixBackground() {
     const ctx = canvas.getContext("2d");
 
     let animationFrameId;
-    let mouse = { x: -1000, y: -1000 };
+    let mouse = { x: -1000, y: -1000, vx: 0, vy: 0, lastX: -1000, lastY: -1000 };
+    let dots = [];
+
+    const spacing = 25; // Distance between dots
+    const baseRadius = 2; // Normal size
+    const influenceRadius = 150; // How far mouse affects dots
+    const dragFactor = 0.08; // How much the mouse drags the dots
+    const spring = 0.05; // Spring back to original position
+    const friction = 0.88; // Damping/friction
+
+    const initDots = () => {
+      dots = [];
+      const offsetX = (canvas.width % spacing) / 2;
+      const offsetY = (canvas.height % spacing) / 2;
+      
+      for (let x = offsetX; x < canvas.width; x += spacing) {
+        for (let y = offsetY; y < canvas.height; y += spacing) {
+          dots.push({ x, y, ox: 0, oy: 0, vx: 0, vy: 0 });
+        }
+      }
+    };
 
     const handleMouseMove = (e) => {
+      if (mouse.lastX === -1000) {
+        mouse.lastX = e.clientX;
+        mouse.lastY = e.clientY;
+      }
+      mouse.vx = e.clientX - mouse.lastX;
+      mouse.vy = e.clientY - mouse.lastY;
+      mouse.lastX = e.clientX;
+      mouse.lastY = e.clientY;
       mouse.x = e.clientX;
       mouse.y = e.clientY;
     };
@@ -19,6 +47,10 @@ export default function DotMatrixBackground() {
     const handleMouseLeave = () => {
       mouse.x = -1000;
       mouse.y = -1000;
+      mouse.vx = 0;
+      mouse.vy = 0;
+      mouse.lastX = -1000;
+      mouse.lastY = -1000;
     };
 
     window.addEventListener("mousemove", handleMouseMove);
@@ -27,6 +59,7 @@ export default function DotMatrixBackground() {
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      initDots();
     };
 
     window.addEventListener("resize", resize);
@@ -35,37 +68,46 @@ export default function DotMatrixBackground() {
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      const spacing = 25; // Distance between dots
-      const baseRadius = 2; // Normal size
-      const hoverRadius = 8; // Max size when hovered
-      const influenceRadius = 150; // How far mouse affects dots
-
-      // Calculate offsets to center the grid perfectly
-      const offsetX = (canvas.width % spacing) / 2;
-      const offsetY = (canvas.height % spacing) / 2;
-
       // Use a slate color for the dots
       ctx.fillStyle = "rgba(117, 117, 138, 0.4)"; 
 
-      for (let x = offsetX; x < canvas.width; x += spacing) {
-        for (let y = offsetY; y < canvas.height; y += spacing) {
-          const dx = x - mouse.x;
-          const dy = y - mouse.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+      // Apply decay to mouse velocity so it stops applying force when mouse stops
+      mouse.vx *= 0.5;
+      mouse.vy *= 0.5;
 
-          let r = baseRadius;
-          if (distance < influenceRadius) {
-            // Calculate bulge effect
-            const factor = 1 - distance / influenceRadius;
-            // Easing for smoother bulge
-            const easeFactor = factor * factor * (3 - 2 * factor); 
-            r = baseRadius + easeFactor * (hoverRadius - baseRadius);
-          }
+      for (let i = 0; i < dots.length; i++) {
+        let dot = dots[i];
 
-          ctx.beginPath();
-          ctx.arc(x, y, r, 0, Math.PI * 2);
-          ctx.fill();
+        // Apply force from mouse
+        const dx = dot.x - mouse.x;
+        const dy = dot.y - mouse.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < influenceRadius) {
+          const force = (influenceRadius - dist) / influenceRadius;
+          dot.vx += mouse.vx * force * dragFactor;
+          dot.vy += mouse.vy * force * dragFactor;
         }
+
+        // Apply spring physics
+        dot.vx += -dot.ox * spring;
+        dot.vy += -dot.oy * spring;
+
+        // Apply friction
+        dot.vx *= friction;
+        dot.vy *= friction;
+
+        // Update position offset
+        dot.ox += dot.vx;
+        dot.oy += dot.vy;
+
+        // Dynamic radius based on movement to simulate catching light / ripples
+        const speed = Math.sqrt(dot.vx * dot.vx + dot.vy * dot.vy);
+        const r = baseRadius + Math.min(speed * 0.5, 4);
+
+        ctx.beginPath();
+        ctx.arc(dot.x + dot.ox, dot.y + dot.oy, r, 0, Math.PI * 2);
+        ctx.fill();
       }
 
       animationFrameId = requestAnimationFrame(draw);

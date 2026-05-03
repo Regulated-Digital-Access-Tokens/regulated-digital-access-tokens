@@ -228,7 +228,7 @@ body {
   top: -6px;
   bottom: -6px;
   border-radius: 18px;
-  pointer-events: none;
+  pointer-events: auto;
   z-index: -1;
   opacity: 0;
   transition: opacity 260ms ease, transform 260ms ease;
@@ -307,7 +307,7 @@ body {
 .btn-primary {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-around;
   gap: 8px;
   padding: 12px 24px;
   background-color: var(--color-near-black);
@@ -451,9 +451,18 @@ body {
   background-color: var(--color-green);
   color: var(--color-white);
   width: 100%;
+  position: relative;
+  overflow: hidden;
+  min-height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .feature-band--navy {
   background-color: var(--color-navy);
+}
+.feature-band--blue {
+  background-color: var(--color-blue);
 }
 
 /* --- blog-filter-chip / taxonomy chip ---
@@ -603,6 +612,11 @@ body {
 }
 .nav-tab.active::after { transform: scaleX(1); }
 
+  .nav-tab--light { color: rgba(255, 255, 255, 0.7); }
+  .nav-tab--light:hover { color: var(--color-white); }
+  .nav-tab--light.active { color: var(--color-white); }
+  .nav-tab--light::after { background-color: var(--color-white); }
+
 /* --- Footer columns --- */
 .footer-col-heading {
   font-family: var(--font-body);
@@ -631,9 +645,115 @@ body {
 /* --------------------------------------------------------------------------
    5. SCROLLBAR REFINEMENT
    -------------------------------------------------------------------------- */
+/* --- Character Animations for Subheadings --- */
+
+@keyframes char-tumble {
+  0%   { transform: translateY(0) rotate(0deg); }
+  25%  { transform: translateY(-3px) rotate(-8deg); }
+  75%  { transform: translateY(2px) rotate(8deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+@keyframes char-wavy {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+.animate-tumble {
+  animation: char-tumble 0.5s ease-in-out infinite;
+}
+
+.animate-wavy {
+  animation: char-wavy 0.6s ease-in-out infinite;
+}
+
+/* --- Snake Marquee Animations --- */
+
+@keyframes marquee-left {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-25%); }
+}
+
+@keyframes marquee-right {
+  0% { transform: translateX(-25%); }
+  100% { transform: translateX(0); }
+}
+
+.animate-marquee-left {
+  animation: marquee-left linear infinite;
+}
+
+.animate-marquee-right {
+  animation: marquee-right linear infinite;
+}
+
+.snake-marquee-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: auto;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  opacity: 0.8; padding: 40px 0;
+}
+
+.marquee-row-wrapper {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+}
+
+.marquee-content {
+  display: flex;
+  white-space: nowrap;
+  width: max-content;
+}
+
+.marquee-svg-item {
+  width: 48px;
+  height: 48px;
+  margin: 0 50px;
+  filter: grayscale(100%);
+  opacity: 0.25; transition: filter 0.4s ease, opacity 0.4s ease, transform 0.4s ease;
+  object-fit: contain;
+  transition: opacity 0.3s ease;
+}
+
+/* --- Refinement for existing scrollbar --- */
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
   background-color: var(--color-hairline);
   border-radius: 3px;
+}
+
+.marquee-svg-item:hover {
+  filter: grayscale(0%) !important;
+  opacity: 1 !important;
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+/* --- Transforming Capsule Navbar --- */
+.nav-capsule {
+  background-color: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: var(--radius-pill);
+  padding: 0 24px;
+  width: auto !important;
+  max-width: 600px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  margin: 0 auto;
+  justify-content: center !important;
+  gap: 24px;
+}
+
+.nav-capsule #wallet-area {
+  margin-left: 12px;
 }

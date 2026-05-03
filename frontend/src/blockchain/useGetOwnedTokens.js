@@ -84,7 +84,33 @@ export function useGetOwnedTokens(ownerAddress) {
 
   useEffect(() => {
     fetchOwnedTokens();
-  }, [fetchOwnedTokens]);
+
+    if (!provider || !ownerAddress) return;
+
+    const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, provider);
+
+    const onEvent = () => {
+      // Small delay to ensure RPC nodes have indexed the new state
+      setTimeout(() => {
+        fetchOwnedTokens();
+      }, 1000);
+    };
+
+    // Listen to events that might change ownership or listing status
+    contract.on("Transfer", onEvent);
+    contract.on("TokenListed", onEvent);
+    contract.on("TokenSale", onEvent);
+    contract.on("ListingCancelled", onEvent);
+    contract.on("TokenMinted", onEvent);
+
+    return () => {
+      contract.off("Transfer", onEvent);
+      contract.off("TokenListed", onEvent);
+      contract.off("TokenSale", onEvent);
+      contract.off("ListingCancelled", onEvent);
+      contract.off("TokenMinted", onEvent);
+    };
+  }, [fetchOwnedTokens, provider, ownerAddress]);
 
   return { ownedTokenIds, isLoading, error, refetch: fetchOwnedTokens };
 }
