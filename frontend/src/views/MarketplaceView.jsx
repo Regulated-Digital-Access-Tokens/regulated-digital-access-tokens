@@ -4,6 +4,7 @@ import DecryptedText from "../components/DecryptedText";
 import Lottie from "lottie-react";
 import removeItemAnim from "../../public/assets/remove-item.json";
 import SnakeMarquee from "../components/SnakeMarquee";
+import DotMatrixBackground from "../components/DotMatrixBackground";
 
 /* --------------------------------------------------------------------------
    Skeleton card shown while listings are loading
@@ -43,10 +44,15 @@ function ListingCard({ listing, onBuy, isBuying }) {
         <div style={{ flex: 1, minWidth: 0 }}>
           <p
             className="text-feature-heading"
-            style={{ fontSize: "16px", fontWeight: 500, marginBottom: "2px", truncate: true }}
+            style={{ fontSize: "16px", fontWeight: 500, marginBottom: "2px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
           >
-            Token #{listing.tokenId}
+            {listing.metadata || `Token #${listing.tokenId}`}
           </p>
+          {listing.metadata && (
+            <span className="text-mono-label" style={{ fontSize: "11px", color: "var(--color-muted)", display: "block", marginBottom: "2px" }}>
+              Token #{listing.tokenId}
+            </span>
+          )}
           <p className="text-caption" style={{ fontFamily: "var(--font-mono)", letterSpacing: "0.05px" }}>
             {listing.seller.slice(0, 6)}…{listing.seller.slice(-4)}
           </p>
@@ -91,15 +97,17 @@ export default function MarketplaceView() {
 
   return (
     <div>
-      {/* Hero — transparent with dot matrix background */}
-      <section className="feature-band" style={{ backgroundColor: "transparent", position: "relative" }}>
+      {/* Hero — near-black with dot matrix background */}
+      <section className="feature-band" style={{ backgroundColor: "var(--color-near-black)", position: "relative" }}>
+        <DotMatrixBackground theme="dark" />
         <div className="section-container" style={{ padding: "120px 24px 64px", position: "relative", zIndex: 1, maxWidth: "800px", textAlign: "center" }}>
           <DecryptedText
             text="The Global Marketplace"
-            className="text-product-display"
+            className="text-product-display text-white"
             style={{ marginBottom: "24px", display: "block", textAlign: "center", width: "100%" }}
+            scrambleColor="rgba(255,255,255,0.85)"
           />
-          <p className="text-body-lg subhead-hover subhead-hover--light subhead-blur subhead-blur--light" style={{ color: "var(--color-slate)", maxWidth: "520px", margin: "0 auto", textAlign: "center" }}>
+          <p className="text-body-lg subhead-hover subhead-hover--dark subhead-blur subhead-blur--dark" style={{ color: "rgba(255,255,255,0.65)", maxWidth: "520px", margin: "0 auto", textAlign: "center" }}>
             Discover and collect regulated digital access tokens.
             Secured on-chain. Unfiltered access.
           </p>

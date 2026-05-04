@@ -310,25 +310,65 @@ body {
   justify-content: space-around;
   gap: 8px;
   padding: 12px 24px;
-  background-color: var(--color-near-black);
-  color: var(--color-white);
+  
+  /* Theme variables */
+  --btn-bg: var(--color-near-black);
+  --btn-text: var(--color-white);
+  --btn-border: transparent;
+  
+  background-color: var(--btn-bg);
+  color: var(--btn-text);
+  border: 1px solid var(--btn-border);
+  
   font-family: var(--font-body);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.71;
   border-radius: var(--radius-pill);
-  border: none;
   cursor: pointer;
   text-decoration: none;
   white-space: nowrap;
-  transition: background-color 0.15s ease, opacity 0.15s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 .btn-primary:hover:not(:disabled) {
-  background-color: #2a2a33;
+  --btn-bg: var(--color-white);
+  --btn-text: var(--color-near-black);
+  --btn-border: var(--color-near-black);
+  
+  background-color: var(--btn-bg);
+  color: var(--btn-text);
+  border-color: var(--btn-border);
 }
+
 .btn-primary:disabled {
   opacity: 0.45;
   cursor: not-allowed;
+}
+
+/* Light variant for dark backgrounds — starts white, inverts to dark on hover */
+.btn-primary--light {
+  --btn-bg: var(--color-white);
+  --btn-text: var(--color-near-black);
+}
+
+.btn-primary--light:hover:not(:disabled) {
+  --btn-bg: var(--color-near-black);
+  --btn-text: var(--color-white);
+  --btn-border: var(--color-white);
+}
+
+/* Specific overrides for the Connect Wallet button to ensure inversion works */
+#connect-wallet-btn.btn-primary:hover:not(:disabled) {
+  background-color: var(--color-white) !important;
+  color: var(--color-near-black) !important;
+  border-color: var(--color-near-black) !important;
+}
+
+#connect-wallet-btn.btn-primary--light:hover:not(:disabled) {
+  background-color: var(--color-near-black) !important;
+  color: var(--color-white) !important;
+  border-color: var(--color-white) !important;
 }
 
 /* Inverted pill for dark backgrounds */

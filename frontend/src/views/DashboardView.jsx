@@ -25,7 +25,7 @@ function InventorySkeleton() {
 /* --------------------------------------------------------------------------
    Single owned-token inventory card
    -------------------------------------------------------------------------- */
-function InventoryCard({ tokenId, image, onList, isListing, price, onPriceChange }) {
+function InventoryCard({ tokenId, metadata, image, onList, isListing, price, onPriceChange }) {
   return (
     <div 
       className="form-card" 
@@ -70,8 +70,13 @@ function InventoryCard({ tokenId, image, onList, isListing, price, onPriceChange
             className="text-card-heading"
             style={{ fontWeight: 500, color: "var(--color-near-black)" }}
           >
-            Token #{tokenId}
+            {metadata || `Token #${tokenId}`}
           </p>
+          {metadata && (
+            <span className="text-mono-label" style={{ color: "var(--color-muted)", fontSize: "11px", marginTop: "4px", display: "block" }}>
+              Token #{tokenId}
+            </span>
+          )}
         </div>
 
         {/* Divider */}
@@ -251,6 +256,7 @@ export default function DashboardView() {
                 <InventoryCard
                   key={token.tokenId}
                   tokenId={token.tokenId}
+                  metadata={token.metadata}
                   image={token.image}
                   price={prices[token.tokenId]}
                   onPriceChange={handlePriceChange}

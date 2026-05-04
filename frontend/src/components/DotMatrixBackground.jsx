@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export default function DotMatrixBackground() {
+export default function DotMatrixBackground({ theme = "light", position = "absolute", zIndex = 0 }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -12,14 +12,18 @@ export default function DotMatrixBackground() {
     let mouse = { x: -1000, y: -1000, vx: 0, vy: 0, lastX: -1000, lastY: -1000 };
     let dots = [];
 
-    const spacing = 25; // Distance between dots
+    const spacing = 20; // Distance between dots
     const baseRadius = 2; // Normal size
-    const influenceRadius = 150; // How far mouse affects dots
-    const dragFactor = 0.08; // How much the mouse drags the dots
-    const spring = 0.05; // Spring back to original position
-    const friction = 0.88; // Damping/friction
+    const influenceRadius = 250; // How far mouse affects dots
+    const dragFactor = 0.8; // How much the mouse drags the dots
+    const spring = 0.1; // Spring back to original position
+    const friction = 0.7; // Damping/friction
 
     const initDots = () => {
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = rect.width+200;
+      canvas.height = rect.height+200;
+      
       dots = [];
       const offsetX = (canvas.width % spacing) / 2;
       const offsetY = (canvas.height % spacing) / 2;
@@ -32,16 +36,20 @@ export default function DotMatrixBackground() {
     };
 
     const handleMouseMove = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
       if (mouse.lastX === -1000) {
-        mouse.lastX = e.clientX;
-        mouse.lastY = e.clientY;
+        mouse.lastX = x;
+        mouse.lastY = y;
       }
-      mouse.vx = e.clientX - mouse.lastX;
-      mouse.vy = e.clientY - mouse.lastY;
-      mouse.lastX = e.clientX;
-      mouse.lastY = e.clientY;
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
+      mouse.vx = x - mouse.lastX;
+      mouse.vy = y - mouse.lastY;
+      mouse.lastX = x;
+      mouse.lastY = y;
+      mouse.x = x;
+      mouse.y = y;
     };
 
     const handleMouseLeave = () => {
@@ -56,20 +64,23 @@ export default function DotMatrixBackground() {
     window.addEventListener("mousemove", handleMouseMove);
     document.body.addEventListener("mouseleave", handleMouseLeave);
 
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    const container = canvas.parentElement;
+    const resizeObserver = new ResizeObserver(() => {
       initDots();
-    };
-
-    window.addEventListener("resize", resize);
-    resize();
+    });
+    if (container) {
+      resizeObserver.observe(container);
+    } else {
+      window.addEventListener("resize", initDots);
+    }
+    
+    initDots();
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Use a slate color for the dots
-      ctx.fillStyle = "rgba(117, 117, 138, 0.4)"; 
+      // Use a slate color for both, slightly more opaque on dark theme to remain visible
+      ctx.fillStyle = theme === "dark" ? "rgba(117, 117, 138, 0.5)" : "rgba(117, 117, 138, 0.4)"; 
 
       // Apply decay to mouse velocity so it stops applying force when mouse stops
       mouse.vx *= 0.5;
@@ -117,25 +128,28 @@ export default function DotMatrixBackground() {
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("resize", resize);
       document.body.removeEventListener("mouseleave", handleMouseLeave);
+      if (container) {
+        resizeObserver.disconnect();
+      } else {
+        window.removeEventListener("resize", initDots);
+      }
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        zIndex: -1,
-        pointerEvents: "none",
-      }}
-      aria-hidden="true"
-    />
+    <div style={{ position, top: 0, left: 0, width: "100%", height: "100%", zIndex, overflow: "hidden", pointerEvents: "none" }}>
+      <canvas
+        ref={canvasRef}
+        style={{
+          width: "100%",
+          height: "100%",
+          display: "block",
+          pointerEvents: "none",
+        }}
+        aria-hidden="true"
+      />
+    </div>
   );
 }

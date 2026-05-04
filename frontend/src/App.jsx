@@ -82,7 +82,7 @@ export default function App() {
    * Determine navbar theme based on scroll state and active tab.
    * Dashboard and Mint have dark backgrounds, so they need light text in initial mode.
    */
-  const isDarkTheme = !isScrolled && (activeTab === "dashboard" || activeTab === "mint");
+  const isDarkTheme = !isScrolled;
   const navTextColor = isDarkTheme ? "var(--color-white)" : "var(--color-near-black)";
   const navMutedColor = isDarkTheme ? "rgba(255, 255, 255, 0.7)" : "var(--color-slate)";
 
@@ -111,7 +111,7 @@ export default function App() {
 
   return (
     <div className="flex flex-col min-h-screen" id="app-root" style={{ backgroundColor: "transparent" }}>
-      <DotMatrixBackground />
+      <DotMatrixBackground theme="light" position="fixed" zIndex={-1} />
 
       {/* ------------------------------------------------------------------ */}
       {/* Navbar — transforms into a floating capsule on scroll              */}
@@ -217,9 +217,6 @@ export default function App() {
                 style={{ 
                   padding: isScrolled ? "8px 16px" : "12px 24px",
                   fontSize: isScrolled ? "12px" : "14px",
-                  backgroundColor: isDarkTheme ? "var(--color-white)" : "var(--color-near-black)",
-                  color: isDarkTheme ? "var(--color-near-black)" : "var(--color-white)",
-                  transition: "all 0.4s ease"
                 }}
                 id="connect-wallet-btn"
               >
