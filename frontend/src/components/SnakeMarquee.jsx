@@ -18,7 +18,7 @@ const BASE_SVG_ASSETS = [
   "assets/tether-usdt-logo.svg"
 ];
 
-const SVG_ASSETS = BASE_SVG_ASSETS.map(asset => `${import.meta.env.BASE_URL}${asset}`);
+const SVG_ASSETS = BASE_SVG_ASSETS.map(asset => `/regulated-digital-access-tokens/${asset}`);
 
 function MarqueeRow({ items, direction = "left", speed = "40s" }) {
   const doubledItems = [...items, ...items, ...items, ...items];
