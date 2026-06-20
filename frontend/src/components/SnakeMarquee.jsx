@@ -1,22 +1,24 @@
 import React from "react";
 
-const SVG_ASSETS = [
-  "/assets/Asset 1.svg",
-  "/assets/d.svg",
-  "/assets/litecoin-ltc-logo.svg",
-  "/assets/monero.svg",
-  "/assets/svg-image-1 (1).svg",
-  "/assets/svg-image-1 (2).svg",
-  "/assets/svg-image-1 (3).svg",
-  "/assets/svg-image-1 (4).svg",
-  "/assets/svg-image-1 (5).svg",
-  "/assets/svg-image-1 (6).svg",
-  "/assets/svg-image-1 (7).svg",
-  "/assets/svg-image-1 (8).svg",
-  "/assets/svg-image-1 (9).svg",
-  "/assets/svg-image-1.svg",
-  "/assets/tether-usdt-logo.svg"
+const BASE_SVG_ASSETS = [
+  "assets/Asset 1.svg",
+  "assets/d.svg",
+  "assets/litecoin-ltc-logo.svg",
+  "assets/monero.svg",
+  "assets/svg-image-1 (1).svg",
+  "assets/svg-image-1 (2).svg",
+  "assets/svg-image-1 (3).svg",
+  "assets/svg-image-1 (4).svg",
+  "assets/svg-image-1 (5).svg",
+  "assets/svg-image-1 (6).svg",
+  "assets/svg-image-1 (7).svg",
+  "assets/svg-image-1 (8).svg",
+  "assets/svg-image-1 (9).svg",
+  "assets/svg-image-1.svg",
+  "assets/tether-usdt-logo.svg"
 ];
+
+const SVG_ASSETS = BASE_SVG_ASSETS.map(asset => `${import.meta.env.BASE_URL}${asset}`);
 
 function MarqueeRow({ items, direction = "left", speed = "40s" }) {
   const doubledItems = [...items, ...items, ...items, ...items];
@@ -34,6 +36,7 @@ function MarqueeRow({ items, direction = "left", speed = "40s" }) {
             src={src} 
             alt="Asset" 
             className="marquee-svg-item"
+            onError={(e) => console.error("Failed to load image at:", src)} 
           />
         ))}
       </div>

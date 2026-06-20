@@ -752,12 +752,15 @@ body {
   display: flex;
   white-space: nowrap;
   width: max-content;
+  overflow: visible; 
+
 }
 
 .marquee-svg-item {
   width: 48px;
   height: 48px;
   margin: 0 50px;
+  padding: 4px;
   filter: grayscale(100%);
   opacity: 0.25; transition: filter 0.4s ease, opacity 0.4s ease, transform 0.4s ease;
   object-fit: contain;
@@ -777,6 +780,8 @@ body {
   opacity: 1 !important;
   transform: scale(1.2);
   cursor: pointer;
+  will-change: transform;
+
 }
 
 /* --- Transforming Capsule Navbar --- */
