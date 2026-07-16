@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { ethers } from "ethers";
 import { useWallet } from "./useWallet";
-import { CONTRACT_ADDRESS, CONTRACT_ABI } from "./contractConfig";
+import { CONTRACT_ADDRESS, CONTRACT_ABI, DEPLOYMENT_BLOCK } from "./contractConfig";
 import { parseTokenURI } from "./parseTokenURI";
 
 /**
@@ -33,7 +33,7 @@ export function useGetListings() {
       // Step 1: Query all "TokenListed" events from the start of the contract deployment.
       // Note: In production, you'd specify a starting block number to speed this up.
       const filter = contract.filters.TokenListed();
-      const events = await contract.queryFilter(filter);
+      const events = await contract.queryFilter(filter, DEPLOYMENT_BLOCK);
 
       // Get unique token IDs from the events (most recent first)
       const tokenIds = [...new Set(events.map(e => e.args.tokenId))];

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useWallet } from "./useWallet";
-import { CONTRACT_ADDRESS, CONTRACT_ABI } from "./contractConfig";
+import { CONTRACT_ADDRESS, CONTRACT_ABI, DEPLOYMENT_BLOCK } from "./contractConfig";
 import { parseTokenURI } from "./parseTokenURI";
 import { ethers } from "ethers";
 
@@ -38,7 +38,7 @@ export function useGetOwnedTokens(ownerAddress) {
 
       // Step 1: Query Transfer events where 'to' is the user.
       const filter = contract.filters.Transfer(null, ownerAddress);
-      const events = await contract.queryFilter(filter);
+      const events = await contract.queryFilter(filter, DEPLOYMENT_BLOCK);
 
       // Get unique token IDs they've received
       const potentialTokenIds = [...new Set(events.map(e => e.args.tokenId))];
