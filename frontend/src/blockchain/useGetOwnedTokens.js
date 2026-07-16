@@ -81,7 +81,7 @@ export function useGetOwnedTokens(ownerAddress) {
       setOwnedTokenIds(verifiedTokenIds.filter(Boolean));
     } catch (err) {
       console.error("Owned token fetch error:", err);
-      setError("Failed to fetch your tokens.");
+      setError(`Failed to fetch your tokens: ${err?.message || err}`);
     } finally {
       setIsLoading(false);
     }
