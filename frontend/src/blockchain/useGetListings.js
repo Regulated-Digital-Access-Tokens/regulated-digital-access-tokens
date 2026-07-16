@@ -75,7 +75,7 @@ export function useGetListings() {
       setListings(listingDetails.filter(Boolean));
     } catch (err) {
       console.error("Listing fetch error:", err);
-      setError("Failed to fetch marketplace listings.");
+      setError(`Failed to fetch marketplace listings: ${err?.message || err}`);
     } finally {
       setIsLoading(false);
     }
