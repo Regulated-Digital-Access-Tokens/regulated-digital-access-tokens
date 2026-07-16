@@ -3,6 +3,7 @@ import { useWallet } from "./useWallet";
 import { CONTRACT_ADDRESS, CONTRACT_ABI, DEPLOYMENT_BLOCK } from "./contractConfig";
 import { parseTokenURI } from "./parseTokenURI";
 import { ethers } from "ethers";
+import { fetchEventsSafely } from "./fetchEvents";
 
 /**
  * useGetOwnedTokens
@@ -38,7 +39,7 @@ export function useGetOwnedTokens(ownerAddress) {
 
       // Step 1: Query Transfer events where 'to' is the user.
       const filter = contract.filters.Transfer(null, ownerAddress);
-      const events = await contract.queryFilter(filter, DEPLOYMENT_BLOCK);
+      const events = await fetchEventsSafely(contract, filter, DEPLOYMENT_BLOCK);
 
       // Get unique token IDs they've received
       const potentialTokenIds = [...new Set(events.map(e => e.args.tokenId))];
