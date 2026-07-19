@@ -1,6 +1,6 @@
 /* ==========================================================================
-   REGULATED ACCESS TOKENS — Design System
-   Based on DESIGN.md (Cohere-derived system)
+   REGULATED ACCESS TOKENS — Caldera Design System
+   Volcanic warm-limestone canvas with molten orange accents.
    ========================================================================== */
 
 @tailwind base;
@@ -8,55 +8,99 @@
 @tailwind utilities;
 
 /* --------------------------------------------------------------------------
-   1. CSS CUSTOM PROPERTIES — Design Tokens
+   1. CSS CUSTOM PROPERTIES — Caldera Design Tokens
    -------------------------------------------------------------------------- */
 :root {
-  /* Brand & Accent */
-  --color-black:         #000000;
-  --color-near-black:    #17171c;
-  --color-green:         #003c33;
-  --color-navy:          #071829;
-  --color-blue:          #1863dc;
-  --color-coral:         #ff7759;
-  --color-soft-coral:    #ffad9b;
+  /* Colors */
+  --color-ember: #fc5000;
+  --color-plasma-violet: #524ae9;
+  --color-sulfur: #f5f28e;
+  --color-limestone: #f7f6f2;
+  --color-pumice: #e2e2df;
+  --color-obsidian: #070607;
+  --color-chalk: #ffffff;
 
-  /* Surface & Background */
-  --color-white:         #ffffff;
-  --color-stone:         #eeece7;
-  --color-pale-green:    #edfce9;
-  --color-pale-blue:     #f1f5ff;
-  --color-card-border:   #f2f2f2;
+  /* Semantic aliases */
+  --color-error: #b30000;
+  --color-success: #2d7d46;
 
-  /* Text & Rules */
-  --color-ink:           #212121;
-  --color-muted:         #93939f;
-  --color-slate:         #75758a;
-  --color-hairline:      #d9d9dd;
-  --color-border-light:  #e5e7eb;
+  /* Typography — Font Families */
+  --font-display: 'Bebas Neue', 'Anton', ui-sans-serif, system-ui, sans-serif;
+  --font-body: 'DM Sans', 'Inter', 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --font-system: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  /* Semantic */
-  --color-focus-blue:    #4c6ee6;
-  --color-focus-violet:  #9b60aa;
-  --color-error:         #b30000;
+  /* Typography — Scale */
+  --text-caption: 12px;
+  --leading-caption: 1.2;
+  --text-body-sm: 14px;
+  --leading-body-sm: 1.2;
+  --text-body: 16px;
+  --leading-body: 1.55;
+  --text-subheading: 26px;
+  --leading-subheading: 1.2;
+  --text-heading-sm: 30px;
+  --leading-heading-sm: 1.5;
+  --text-heading: 32px;
+  --leading-heading: 1;
+  --tracking-heading: 0.64px;
+  --text-heading-lg: 48px;
+  --leading-heading-lg: 1;
+  --text-heading-2xl: 80px;
+  --leading-heading-2xl: 1.1;
+  --text-heading-3xl: 96px;
+  --leading-heading-3xl: 0.95;
+  --text-display: 189px;
+  --leading-display: 0.94;
 
-  /* Typography */
-  --font-display: "Space Grotesk", "Inter", ui-sans-serif, system-ui;
-  --font-body:    "Inter", Arial, ui-sans-serif, system-ui;
-  --font-mono:    "Space Grotesk", Arial, ui-sans-serif, system-ui;
+  /* Typography — Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
 
-  /* Radius Scale */
-  --radius-xs:   4px;
-  --radius-sm:   8px;
-  --radius-md:   16px;
-  --radius-lg:   22px;
-  --radius-xl:   30px;
-  --radius-pill: 32px;
+  /* Spacing */
+  --spacing-4: 4px;
+  --spacing-8: 8px;
+  --spacing-9: 9px;
+  --spacing-10: 10px;
+  --spacing-12: 12px;
+  --spacing-16: 16px;
+  --spacing-18: 18px;
+  --spacing-20: 20px;
+  --spacing-24: 24px;
+  --spacing-32: 32px;
+  --spacing-40: 40px;
+  --spacing-48: 48px;
+  --spacing-56: 56px;
+  --spacing-64: 64px;
+  --spacing-80: 80px;
+  --spacing-92: 92px;
+
+  /* Layout */
+  --page-max-width: 1280px;
+  --section-gap: 80px;
+  --card-padding: 40px;
+  --element-gap: 16px;
+
+  /* Border Radius */
+  --radius-cards: 40px;
+  --radius-pills: 800px;
+  --radius-small: 16px;
+  --radius-inputs: 100px;
+  --radius-medium: 20px;
+  --radius-buttons: 40px;
+
+  /* Surfaces */
+  --surface-canvas: #e2e2df;
+  --surface-card: #f7f6f2;
+  --surface-feature: #fc5000;
+  --surface-hero: #524ae9;
 }
 
 /* --------------------------------------------------------------------------
    2. BASE RESET
    -------------------------------------------------------------------------- */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
@@ -68,10 +112,11 @@ html {
 
 body {
   font-family: var(--font-body);
-  font-size: 16px;
-  line-height: 1.5;
-  color: var(--color-ink);
-  background-color: var(--color-white);
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--leading-body);
+  color: var(--color-obsidian);
+  background-color: var(--color-pumice);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -80,265 +125,235 @@ body {
    3. TYPOGRAPHY UTILITIES
    -------------------------------------------------------------------------- */
 
-/* Hero Display — 96px, tight */
-.text-hero {
+/* Display — 189px (hero signature) */
+.text-display {
+  font-family: var(--font-display);
+  font-size: clamp(64px, 14vw, 189px);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-display);
+  letter-spacing: 0.02em;
+  color: var(--color-obsidian);
+  text-transform: uppercase;
+}
+
+/* Heading 3XL — 96px */
+.text-heading-3xl {
   font-family: var(--font-display);
   font-size: clamp(48px, 8vw, 96px);
-  font-weight: 400;
-  line-height: 1.00;
-  letter-spacing: -1.92px;
-  color: var(--color-near-black);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-heading-3xl);
+  letter-spacing: 0.02em;
+  color: var(--color-obsidian);
+  text-transform: uppercase;
 }
 
-/* Product Display — 72px */
-.text-product-display {
+/* Heading 2XL — 80px */
+.text-heading-2xl {
   font-family: var(--font-display);
-  font-size: clamp(36px, 6vw, 72px);
-  font-weight: 400;
-  line-height: 1.00;
-  letter-spacing: -1.44px;
-  color: var(--color-near-black);
+  font-size: clamp(40px, 6vw, 80px);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-heading-2xl);
+  letter-spacing: 0.02em;
+  color: var(--color-obsidian);
+  text-transform: uppercase;
 }
 
-/* Section Heading — 48px */
-.text-section-heading {
-  font-family: var(--font-body);
-  font-size: clamp(28px, 4vw, 48px);
-  font-weight: 400;
-  line-height: 1.20;
-  letter-spacing: -0.48px;
-  color: var(--color-near-black);
+/* Heading LG — 48px */
+.text-heading-lg {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-heading-lg);
+  letter-spacing: 0.02em;
+  color: var(--color-obsidian);
+  text-transform: uppercase;
 }
 
-/* Card Heading — 32px */
-.text-card-heading {
-  font-family: var(--font-body);
-  font-size: 32px;
-  font-weight: 400;
-  line-height: 1.20;
-  letter-spacing: -0.32px;
-  color: var(--color-near-black);
+/* Heading — 32px */
+.text-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-heading);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-heading);
+  letter-spacing: var(--tracking-heading);
+  color: var(--color-obsidian);
+  text-transform: uppercase;
 }
 
-/* Feature Heading — 24px */
-.text-feature-heading {
+/* Subheading — 26px */
+.text-subheading {
+  font-family: var(--font-display);
+  font-size: var(--text-subheading);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-subheading);
+  letter-spacing: 0.02em;
+  color: var(--color-obsidian);
+  text-transform: uppercase;
+}
+
+/* Heading SM — 30px (DM Sans for supporting headings) */
+.text-heading-sm {
   font-family: var(--font-body);
-  font-size: 24px;
-  font-weight: 400;
-  line-height: 1.30;
-  color: var(--color-near-black);
+  font-size: var(--text-heading-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--leading-heading-sm);
+  color: var(--color-obsidian);
+}
+
+/* Body — 16px */
+.text-body {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--leading-body);
+  color: var(--color-obsidian);
 }
 
 /* Body Large — 18px */
 .text-body-lg {
   font-family: var(--font-body);
   font-size: 18px;
-  font-weight: 400;
-  line-height: 1.40;
-  color: var(--color-ink);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.5;
+  color: var(--color-obsidian);
 }
 
-/* Body — 16px */
-.text-body {
+/* Body SM — 14px */
+.text-body-sm {
   font-family: var(--font-body);
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 1.50;
-  color: var(--color-ink);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--leading-body-sm);
+  color: var(--color-obsidian);
 }
 
-/* Caption / Metadata — 14px */
+/* Caption — 14px muted */
 .text-caption {
   font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.40;
-  color: var(--color-muted);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+  color: rgba(7, 6, 7, 0.5);
 }
 
-/* Mono Label — 14px, tracked, uppercase */
-.text-mono-label {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 1.40;
-  letter-spacing: 0.28px;
-  text-transform: uppercase;
-  color: var(--color-muted);
-}
-
-/* Micro — 12px */
+/* Micro / Meta — 12px system */
 .text-micro {
+  font-family: var(--font-system);
+  font-size: var(--text-caption);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--leading-caption);
+  color: rgba(7, 6, 7, 0.5);
+}
+
+/* Mono Label — replaced with display font uppercase */
+.text-mono-label {
   font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 400;
-  line-height: 1.40;
-  color: var(--color-muted);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(7, 6, 7, 0.5);
 }
 
-/* --------------------------------------------------------------------------
-   Subheading hover readability helpers
-   - Use .subhead-hover + modifier to make main page subheads more readable
-   -------------------------------------------------------------------------- */
-.subhead-hover {
-  transition: color 0.18s ease, transform 0.18s ease;
-  display: inline-block;
-  transform-origin: center;
-}
 
-/* Light background variant (default muted slate -> near-black on hover) */
-.subhead-hover--light {
-  color: var(--color-slate);
-}
-.subhead-hover--light:hover {
-  color: var(--color-near-black);
-  transform: scale(1.02);
-}
-
-/* Dark background variant (muted white -> full white on hover) */
-.subhead-hover--dark {
-  color: rgba(255,255,255,0.65);
-}
-.subhead-hover--dark:hover {
-  color: var(--color-white);
-  transform: scale(1.08);
-  opacity: 1;
-}
-
-/* --------------------------------------------------------------------------
-   Soft backdrop blur for subheadings
-   - uses a ::before pseudo-element with backdrop-filter
-   - two theme variants (light/dark) to pick an appropriate tint
-   - soft-edge effect achieved via negative inset + border-radius + mask fade
-   -------------------------------------------------------------------------- */
-.subhead-blur {
-  position: relative;
-  display: inline-block;
-  z-index: 0;
-  /* small padding so the blur has room around text */
-  padding: 4px 10px;
-  border-radius: 14px;
-}
-
-.subhead-blur::before {
-  content: "";
-  position: absolute;
-  left: -10px;
-  right: -10px;
-  top: -6px;
-  bottom: -6px;
-  border-radius: 18px;
-  pointer-events: auto;
-  z-index: -1;
-  opacity: 0;
-  transition: opacity 260ms ease, transform 260ms ease;
-  /* make sure the element participates in backdrop-filter compositing */
-  background: rgba(255,255,255,0.02);
-  backdrop-filter: blur(0px);
-  -webkit-backdrop-filter: blur(0px);
-  /* mask to softly fade edges (horizontal + vertical) */
-  mask-image: radial-gradient(closest-side, rgba(0,0,0,1), rgba(0,0,0,0.95) 60%, rgba(0,0,0,0) 100%);
-  -webkit-mask-image: radial-gradient(closest-side, rgba(0,0,0,1), rgba(0,0,0,0.95) 60%, rgba(0,0,0,0) 100%);
-}
-
-/* Light variant: tint toward dark blur */
-.subhead-blur--light::before {
-  background: rgba(255,255,255,0.02);
-}
-.subhead-blur--light:hover::before {
-  opacity: 1;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-/* Dark variant: tint toward light blur */
-.subhead-blur--dark::before {
-  background: rgba(0,0,0,0.12);
-}
-.subhead-blur--dark:hover::before {
-  opacity: 1;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-/* --------------------------------------------------------------------------
-   Interactive Text Hover Enlarge Effect
-   -------------------------------------------------------------------------- */
-.text-hero,
-.text-section-heading,
-.text-card-heading,
+/* Feature heading — 24px display */
 .text-feature-heading {
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-  display: inline-block;
-  transform-origin: center left;
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: var(--font-weight-regular);
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  color: var(--color-obsidian);
+  text-transform: uppercase;
 }
 
-.text-hero:hover,
-.text-section-heading:hover,
-.text-card-heading:hover,
-.text-feature-heading:hover {
-  transform: scale(1.05);
-}
-
-/* --------------------------------------------------------------------------
-   Center-aligned transition to bold
-   -------------------------------------------------------------------------- */
+/* Product display alias */
 .text-product-display {
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), font-weight 0.25s ease;
-  display: inline-block;
-  transform-origin: center center;
+  font-family: var(--font-display);
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: var(--font-weight-regular);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  color: var(--color-obsidian);
+  text-transform: uppercase;
 }
 
-.text-product-display:hover {
-  transform: scale(1.05);
-  font-weight: 700;
+/* Section heading alias */
+.text-section-heading {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: var(--font-weight-regular);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  color: var(--color-obsidian);
+  text-transform: uppercase;
+}
+
+/* Card heading alias */
+.text-card-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-heading);
+  font-weight: var(--font-weight-regular);
+  line-height: 1;
+  letter-spacing: var(--tracking-heading);
+  color: var(--color-obsidian);
+  text-transform: uppercase;
 }
 
 /* Inverted text (on dark backgrounds) */
-.text-white   { color: var(--color-white); }
-.text-white-muted { color: rgba(255,255,255,0.65); }
+.text-chalk {
+  color: var(--color-chalk) !important;
+}
+
+.text-chalk-muted {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Legacy aliases */
+.text-white {
+  color: var(--color-chalk) !important;
+}
+
+.text-white-muted {
+  color: rgba(255, 255, 255, 0.6) !important;
+}
 
 /* --------------------------------------------------------------------------
    4. COMPONENTS
    -------------------------------------------------------------------------- */
 
-/* --- button-primary ---
-   Near-black pill CTA, 14-16px, 12px 24px padding, 32px radius */
+/* --- Primary CTA Button ---
+   Filled Ember, Obsidian text, full pill (800px), 12px/24px padding */
 .btn-primary {
   display: inline-flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
   gap: 8px;
   padding: 12px 24px;
-  
-  /* Theme variables */
-  --btn-bg: var(--color-near-black);
-  --btn-text: var(--color-white);
-  --btn-border: transparent;
-  
-  background-color: var(--btn-bg);
-  color: var(--btn-text);
-  border: 1px solid var(--btn-border);
-  
+
+  background-color: var(--color-ember);
+  color: var(--color-obsidian);
+  border: none;
+
   font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.71;
-  border-radius: var(--radius-pill);
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-medium);
+  line-height: 1.2;
+  border-radius: var(--radius-pills);
   cursor: pointer;
   text-decoration: none;
   white-space: nowrap;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: filter 0.25s ease, transform 0.25s ease;
 }
 
 .btn-primary:hover:not(:disabled) {
-  --btn-bg: var(--color-white);
-  --btn-text: var(--color-near-black);
-  --btn-border: var(--color-near-black);
-  
-  background-color: var(--btn-bg);
-  color: var(--btn-text);
-  border-color: var(--btn-border);
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .btn-primary:disabled {
@@ -346,150 +361,153 @@ body {
   cursor: not-allowed;
 }
 
-/* Light variant for dark backgrounds — starts white, inverts to dark on hover */
+/* Light variant for dark backgrounds — Chalk text on Ember */
 .btn-primary--light {
-  --btn-bg: var(--color-white);
-  --btn-text: var(--color-near-black);
+  color: var(--color-chalk);
 }
 
 .btn-primary--light:hover:not(:disabled) {
-  --btn-bg: var(--color-near-black);
-  --btn-text: var(--color-white);
-  --btn-border: var(--color-white);
+  filter: brightness(1.08);
+  transform: translateY(-1px);
 }
 
-/* Specific overrides for the Connect Wallet button to ensure inversion works */
+/* Override for wallet connect button */
 #connect-wallet-btn.btn-primary:hover:not(:disabled) {
-  background-color: var(--color-white) !important;
-  color: var(--color-near-black) !important;
-  border-color: var(--color-near-black) !important;
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+  background-color: var(--color-ember);
+  color: var(--color-obsidian);
 }
 
 #connect-wallet-btn.btn-primary--light:hover:not(:disabled) {
-  background-color: var(--color-near-black) !important;
-  color: var(--color-white) !important;
-  border-color: var(--color-white) !important;
+  color: var(--color-chalk);
+  background-color: var(--color-ember);
 }
 
 /* Inverted pill for dark backgrounds */
 .btn-primary-inverted {
-  background-color: var(--color-white);
-  color: var(--color-near-black);
-}
-.btn-primary-inverted:hover:not(:disabled) {
-  background-color: #f0eee9;
+  background-color: var(--color-chalk);
+  color: var(--color-obsidian);
 }
 
-/* --- button-secondary ---
-   Text-only underlined action */
+.btn-primary-inverted:hover:not(:disabled) {
+  filter: brightness(0.96);
+}
+
+/* --- Secondary Pill Button ---
+   Transparent bg, 1.5px Obsidian border, 40px radius */
 .btn-secondary {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: none;
-  border: none;
-  padding: 0;
+  padding: 16px;
+  background: transparent;
+  border: 1.5px solid var(--color-obsidian);
+  border-radius: var(--radius-buttons);
   font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--color-blue);
-  text-decoration: underline;
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-obsidian);
   cursor: pointer;
-  transition: opacity 0.15s ease;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
-.btn-secondary:hover { opacity: 0.75; }
 
-/* --- button-pill-outline ---
-   Outlined pill, transparent fill, 1px dark border, 30px radius */
+.btn-secondary:hover {
+  background-color: var(--color-obsidian);
+  color: var(--color-chalk);
+}
+
+/* --- Outlined Pill Button --- */
 .btn-pill-outline {
   display: inline-flex;
   align-items: center;
-  padding: 6px 16px;
+  padding: 10px 20px;
   background: transparent;
-  border: 1px solid var(--color-near-black);
-  border-radius: var(--radius-xl);
+  border: 1.5px solid var(--color-obsidian);
+  border-radius: var(--radius-pills);
   font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--color-near-black);
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-obsidian);
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
+
 .btn-pill-outline:hover {
-  background-color: var(--color-near-black);
-  color: var(--color-white);
+  background-color: var(--color-obsidian);
+  color: var(--color-chalk);
 }
+
 .btn-pill-outline.active {
-  background-color: var(--color-near-black);
-  color: var(--color-white);
+  background-color: var(--color-obsidian);
+  color: var(--color-chalk);
 }
 
 /* --- Wallet address chip --- */
 .wallet-chip {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  background-color: var(--color-stone);
-  border-radius: var(--radius-pill);
-  font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--color-near-black);
-  letter-spacing: 0.1px;
+  gap: 8px;
+  padding: 10px 18px;
+  background-color: var(--color-limestone);
+  border-radius: var(--radius-pills);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-obsidian);
+  letter-spacing: 0.02em;
+  border: 1.5px solid transparent;
+  transition: border-color 0.2s ease;
 }
 
-/* --- product-card ---
-   Warm stone, 8px radius, generous padding */
+/* --- Product / Listing Card ---
+   Limestone bg, 40px radius, 40px padding, no shadow, no border */
 .product-card {
-  background-color: var(--color-stone);
-  border-radius: var(--radius-sm);
-  padding: 24px;
-  border: 1px solid var(--color-card-border);
+  background-color: var(--color-limestone);
+  border-radius: var(--radius-cards);
+  padding: var(--card-padding);
+  border: 0.5px solid rgba(0, 0, 0);
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  transition: transform 0.15s ease;
+  gap: var(--element-gap);
+  transition: transform 0.2s ease;
 }
+
 .product-card:hover {
   transform: translateY(-2px);
 }
+
 .product-card__divider {
-  height: 1px;
-  background-color: var(--color-hairline);
-  margin: 0 -24px;
+  height: 1.5px;
+  background: var(--color-obsidian);
+  opacity: 0.08;
+  margin: 0 calc(-1 * var(--card-padding));
+  border: none;
+  /* Dotted divider signature */
+  background: none;
+  border-top: 1.5px dotted rgba(7, 6, 7, 0.2);
 }
 
-/* --- hero-photo-card media placeholder ---
-   22px radius rounded media surface */
+/* --- Media card surface --- */
 .media-card {
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-cards);
   overflow: hidden;
-  background-color: var(--color-stone);
+  background-color: var(--color-obsidian);
 }
 
-/* --- agent-console-card ---
-   Dark near-black panel for tx toast and console UI */
+/* --- Console card (toast / console UI) --- */
 .console-card {
-  background-color: var(--color-near-black);
-  border-radius: var(--radius-sm);
-  color: var(--color-white);
-  padding: 16px 20px;
+  background-color: var(--color-obsidian);
+  border-radius: var(--radius-cards);
+  color: var(--color-chalk);
+  padding: 20px 24px;
 }
 
-/* --- capability-card ---
-   White surface with top rule only */
-.capability-card {
-  border-top: 1px solid var(--color-hairline);
-  padding: 24px 0;
-  background: transparent;
-}
-
-/* --- dark-feature-band ---
-   Deep green full-width section */
+/* --- Feature band --- */
 .feature-band {
-  background-color: var(--color-green);
-  color: var(--color-white);
+  background-color: var(--color-obsidian);
+  color: var(--color-chalk);
   width: 100%;
   position: relative;
   overflow: hidden;
@@ -498,205 +516,269 @@ body {
   align-items: center;
   justify-content: center;
 }
-.feature-band--navy {
-  background-color: var(--color-navy);
-}
-.feature-band--blue {
-  background-color: var(--color-blue);
+
+.feature-band--ember {
+  background-color: var(--color-ember);
 }
 
-/* --- blog-filter-chip / taxonomy chip ---
-   Coral bordered, large */
+.feature-band--violet {
+  background-color: var(--color-plasma-violet);
+}
+
+/* --- Category Tag Badge ---
+   Sulfur bg, Obsidian text, pill shape */
 .chip {
   display: inline-flex;
   align-items: center;
-  padding: 6px 14px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--color-soft-coral);
-  background-color: transparent;
-  font-size: 13px;
-  color: var(--color-coral);
+  padding: 4px 10px;
+  border-radius: var(--radius-pills);
+  border: none;
+  background-color: var(--color-sulfur);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-obsidian);
   cursor: pointer;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-.chip.active {
-  background-color: var(--color-coral);
-  color: var(--color-near-black);
-  border-color: var(--color-coral);
+  transition: filter 0.2s ease;
 }
 
-/* --- Form inputs --- */
+.chip:hover {
+  filter: brightness(0.95);
+}
+
+.chip.active {
+  background-color: var(--color-ember);
+  color: var(--color-chalk);
+}
+
+/* --- Form inputs ---
+   Pill inputs (100px radius), 1.5px border */
 .form-input {
   width: 100%;
-  padding: 12px 16px;
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-xs);
+  padding: 14px 20px;
+  border: 1.5px solid rgba(7, 6, 7, 0.2);
+  border-radius: var(--radius-inputs);
   font-family: var(--font-body);
-  font-size: 14px;
-  color: var(--color-ink);
-  background-color: var(--color-white);
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-obsidian);
+  background-color: var(--color-chalk);
   outline: none;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.2s ease;
 }
+
 .form-input:focus {
-  border-color: var(--color-focus-violet);
-  box-shadow: 0 0 0 3px rgba(155, 96, 170, 0.12);
+  border-color: var(--color-ember);
 }
+
 .form-input::placeholder {
-  color: var(--color-muted);
+  color: rgba(7, 6, 7, 0.35);
 }
 
 .form-label {
   font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--color-ink);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-obsidian);
   display: block;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
-/* --- contact-form-card --- */
+/* --- Form card ---
+   Limestone, 40px radius, 40px padding */
 .form-card {
-  background-color: var(--color-white);
-  border-radius: var(--radius-md);
-  border: 1px solid var(--color-border-light);
-  padding: 40px;
+  background-color: var(--color-limestone);
+  border-radius: var(--radius-cards);
+  border: 1.5px solid rgba(7, 6, 7, 0.08);
+  padding: var(--card-padding);
   max-width: 560px;
   width: 100%;
 }
 
-/* --- Announcement / error / status strip --- */
+/* --- Status strips --- */
 .status-strip {
   width: 100%;
-  padding: 10px 24px;
-  background-color: var(--color-black);
-  color: var(--color-white);
-  font-size: 13px;
+  padding: 12px 24px;
+  background-color: var(--color-obsidian);
+  color: var(--color-chalk);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-medium);
   text-align: center;
+  border-radius: var(--radius-small);
 }
-.status-strip--coral {
-  background-color: var(--color-coral);
-  color: var(--color-near-black);
-}
+
 .status-strip--error {
-  background-color: #fff0f0;
-  border: 1px solid rgba(179,0,0,0.2);
+  background-color: rgba(179, 0, 0, 0.06);
+  border: 1.5px solid rgba(179, 0, 0, 0.15);
   color: var(--color-error);
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-small);
   text-align: left;
 }
 
-/* --- Mono price badge --- */
+/* --- Price badge --- */
 .price-badge {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--color-near-black);
-  letter-spacing: 0.1px;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: var(--font-weight-regular);
+  color: var(--color-ember);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 /* --- Section containers --- */
 .section-container {
-  max-width: 1200px;
+  max-width: var(--page-max-width);
   margin: 0 auto;
   padding: 0 24px;
 }
 
-/* --- Hairline divider --- */
+/* --- Dotted divider (signature detail) --- */
 .divider {
-  height: 1px;
-  background-color: var(--color-hairline);
+  height: 0;
+  border: none;
+  border-top: 1.5px dotted rgba(7, 6, 7, 0.15);
 }
 
 /* --- Loading skeleton pulse --- */
 .skeleton {
-  background: linear-gradient(90deg, var(--color-stone) 25%, #e3e1dc 50%, var(--color-stone) 75%);
+  background: linear-gradient(90deg, var(--color-pumice) 25%, var(--color-limestone) 50%, var(--color-pumice) 75%);
   background-size: 200% 100%;
   animation: skeleton-shimmer 1.5s infinite;
-  border-radius: var(--radius-sm);
-}
-@keyframes skeleton-shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  border-radius: var(--radius-medium);
 }
 
-/* --- Nav active tab underline --- */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* --- Nav tab --- */
 .nav-tab {
   position: relative;
-  padding: 8px 4px;
+  padding: 8px 12px;
   background: none;
   border: none;
   font-family: var(--font-body);
-  font-size: 15px;
-  font-weight: 400;
-  color: var(--color-muted);
+  font-size: var(--text-body);
+  font-weight: var(--font-weight-medium);
+  color: rgba(7, 6, 7, 0.5);
   cursor: pointer;
-  transition: color 0.15s ease;
+  transition: color 0.2s ease;
   text-decoration: none;
+  border-radius: var(--radius-pills);
 }
+
 .nav-tab::after {
   content: "";
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: 2px;
+  left: 12px;
+  right: 12px;
   height: 2px;
-  background-color: var(--color-near-black);
+  background-color: var(--color-ember);
   transform: scaleX(0);
-  transition: transform 0.2s ease;
+  transition: transform 0.25s ease;
+  border-radius: 1px;
 }
-.nav-tab:hover { color: var(--color-near-black); }
-.nav-tab.active {
-  color: var(--color-near-black);
-  font-weight: 500;
-}
-.nav-tab.active::after { transform: scaleX(1); }
 
-  .nav-tab--light { color: rgba(255, 255, 255, 0.7); }
-  .nav-tab--light:hover { color: var(--color-white); }
-  .nav-tab--light.active { color: var(--color-white); }
-  .nav-tab--light::after { background-color: var(--color-white); }
+.nav-tab:hover {
+  color: var(--color-obsidian);
+}
+
+.nav-tab.active {
+  color: var(--color-obsidian);
+}
+
+.nav-tab.active::after {
+  transform: scaleX(1);
+}
+
+/* Light variant on dark backgrounds */
+.nav-tab--light {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.nav-tab--light:hover {
+  color: var(--color-chalk);
+}
+
+.nav-tab--light.active {
+  color: var(--color-chalk);
+}
+
+.nav-tab--light::after {
+  background-color: var(--color-ember);
+}
 
 /* --- Footer columns --- */
 .footer-col-heading {
-  font-family: var(--font-body);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--color-white);
+  font-family: var(--font-display);
+  font-size: var(--text-subheading);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-chalk);
   margin-bottom: 12px;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.02em;
 }
+
 .footer-link {
   display: block;
-  font-size: 13px;
-  color: var(--color-muted);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  font-weight: var(--font-weight-medium);
+  color: rgba(255, 255, 255, 0.45);
   text-decoration: none;
   margin-bottom: 8px;
-  transition: color 0.15s ease;
+  transition: color 0.2s ease;
   cursor: pointer;
   background: none;
   border: none;
   padding: 0;
   text-align: left;
 }
-.footer-link:hover { color: var(--color-white); }
+
+.footer-link:hover {
+  color: var(--color-chalk);
+}
 
 /* --------------------------------------------------------------------------
-   5. SCROLLBAR REFINEMENT
+   5. ANIMATIONS
    -------------------------------------------------------------------------- */
-/* --- Character Animations for Subheadings --- */
 
+/* Character animations for subheadings */
 @keyframes char-tumble {
-  0%   { transform: translateY(0) rotate(0deg); }
-  25%  { transform: translateY(-3px) rotate(-8deg); }
-  75%  { transform: translateY(2px) rotate(8deg); }
-  100% { transform: translateY(0) rotate(0deg); }
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  25% {
+    transform: translateY(-3px) rotate(-8deg);
+  }
+
+  75% {
+    transform: translateY(2px) rotate(8deg);
+  }
+
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
 }
 
 @keyframes char-wavy {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-6px);
+  }
 }
 
 .animate-tumble {
@@ -707,16 +789,25 @@ body {
   animation: char-wavy 0.6s ease-in-out infinite;
 }
 
-/* --- Snake Marquee Animations --- */
-
+/* Snake Marquee */
 @keyframes marquee-left {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-25%); }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-25%);
+  }
 }
 
 @keyframes marquee-right {
-  0% { transform: translateX(-25%); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(-25%);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
 
 .animate-marquee-left {
@@ -739,7 +830,8 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  opacity: 0.8; padding: 40px 0;
+  opacity: 0.6;
+  padding: 40px 0;
 }
 
 .marquee-row-wrapper {
@@ -752,8 +844,7 @@ body {
   display: flex;
   white-space: nowrap;
   width: max-content;
-  overflow: visible; 
-
+  overflow: visible;
 }
 
 .marquee-svg-item {
@@ -762,51 +853,59 @@ body {
   margin: 0 50px;
   padding: 4px;
   filter: grayscale(100%);
-  opacity: 0.25; transition: filter 0.4s ease, opacity 0.4s ease, transform 0.4s ease;
+  opacity: 0.2;
   object-fit: contain;
-  transition: opacity 0.3s ease;
-}
-
-/* --- Refinement for existing scrollbar --- */
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb {
-  background-color: var(--color-hairline);
-  border-radius: 3px;
+  transition: filter 0.4s ease, opacity 0.4s ease, transform 0.4s ease;
 }
 
 .marquee-svg-item:hover {
   filter: grayscale(0%) !important;
-  opacity: 1 !important;
+  opacity: 0.9 !important;
   transform: scale(1.2);
   cursor: pointer;
-  will-change: transform;
-
 }
 
-/* --- Transforming Capsule Navbar --- */
+/* --------------------------------------------------------------------------
+   6. SCROLLBAR
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-pumice);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(7, 6, 7, 0.15);
+  border-radius: 3px;
+}
+
+/* --------------------------------------------------------------------------
+   7. TRANSFORMING CAPSULE NAVBAR
+   -------------------------------------------------------------------------- */
 .nav-capsule {
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: var(--radius-pill);
+  background-color: var(--color-limestone);
+  border: 1.5px solid rgba(7, 6, 7, 0.1);
+  border-radius: var(--radius-pills);
   padding: 0 24px;
   width: auto !important;
   max-width: 600px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
   margin: 0 auto;
   justify-content: center !important;
-  gap: 24px;
+  gap: 12px;
 }
 
 .nav-capsule #wallet-area {
   margin-left: 12px;
 }
 
-/* --- Image Upload Zone --- */
+/* --------------------------------------------------------------------------
+   8. IMAGE UPLOAD
+   -------------------------------------------------------------------------- */
 .image-upload-zone {
-  border: 2px dashed var(--color-hairline);
-  border-radius: var(--radius-md);
+  border: 2px dashed rgba(7, 6, 7, 0.2);
+  border-radius: var(--radius-cards);
   padding: 32px 24px;
   display: flex;
   flex-direction: column;
@@ -815,14 +914,17 @@ body {
   cursor: pointer;
   transition: border-color 0.25s ease, background-color 0.25s ease;
   min-height: 120px;
+  background-color: var(--color-chalk);
 }
+
 .image-upload-zone:hover {
-  border-color: var(--color-blue);
-  background-color: var(--color-pale-blue);
+  border-color: var(--color-ember);
+  background-color: rgba(252, 80, 0, 0.04);
 }
+
 .image-upload-zone--active {
-  border-color: var(--color-blue);
-  background-color: var(--color-pale-blue);
+  border-color: var(--color-ember);
+  background-color: rgba(252, 80, 0, 0.04);
   border-style: solid;
 }
 
@@ -831,22 +933,24 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 12px 16px;
-  border: 1px solid var(--color-hairline);
-  border-radius: var(--radius-sm);
-  background-color: var(--color-pale-blue);
+  padding: 14px 18px;
+  border: 1.5px solid rgba(7, 6, 7, 0.1);
+  border-radius: var(--radius-cards);
+  background-color: var(--color-chalk);
 }
+
 .image-preview-thumb {
   width: 56px;
   height: 56px;
   object-fit: cover;
-  border-radius: var(--radius-xs);
+  border-radius: var(--radius-medium);
   flex-shrink: 0;
-  border: 1px solid var(--color-hairline);
+  border: 1.5px solid rgba(7, 6, 7, 0.1);
 }
+
 .image-remove-btn {
   background: none;
-  border: 1px solid var(--color-hairline);
+  border: 1.5px solid rgba(7, 6, 7, 0.15);
   border-radius: 50%;
   width: 28px;
   height: 28px;
@@ -854,13 +958,61 @@ body {
   align-items: center;
   justify-content: center;
   font-size: 12px;
-  color: var(--color-slate);
+  color: rgba(7, 6, 7, 0.5);
   cursor: pointer;
   flex-shrink: 0;
   transition: all 0.2s ease;
 }
+
 .image-remove-btn:hover {
   background-color: var(--color-error);
-  color: var(--color-white);
+  color: var(--color-chalk);
   border-color: var(--color-error);
+}
+
+/* --------------------------------------------------------------------------
+   9. HOVER EFFECTS (Caldera style — subtle, no shadows)
+   -------------------------------------------------------------------------- */
+
+/* Subheading hover helpers — retained for backward compat */
+.subhead-hover {
+  transition: color 0.18s ease;
+  display: inline-block;
+}
+
+.subhead-hover--light {
+  color: rgba(7, 6, 7, 0.5);
+}
+
+.subhead-hover--light:hover {
+  color: var(--color-obsidian);
+}
+
+.subhead-hover--dark {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.subhead-hover--dark:hover {
+  color: var(--color-chalk);
+}
+
+/* Blur effect — simplified for Caldera flat aesthetic */
+.subhead-blur {
+  position: relative;
+  display: inline-block;
+  z-index: 0;
+  padding: 4px 10px;
+  border-radius: 14px;
+}
+
+.subhead-blur::before {
+  display: none;
+}
+
+.subhead-blur--light::before {
+  display: none;
+}
+
+.subhead-blur--dark::before {
+  display: none;
 }

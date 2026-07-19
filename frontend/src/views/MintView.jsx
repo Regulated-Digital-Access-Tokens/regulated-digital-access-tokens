@@ -1,23 +1,23 @@
 import { useState, useRef, useCallback } from "react";
 import { useMintToken } from "../blockchain/useMintToken";
 import DecryptedText from "../components/DecryptedText";
-import WaveBackground from "../components/WaveBackground";
+import ForgeEmbersBackground from "../components/ForgeEmbersBackground";
 import SplitText from "../components/SplitText";
 import { compressImage } from "../utils/compressImage";
 
 /**
- * MintView
+ * MintView — Caldera Edition
  *
- * contact-form-card pattern on a pale-stone section background.
- * Hero copy above the card, form inside the rounded white card.
- * Supports optional image upload with auto-compression.
+ * Ember hero with wave background.
+ * Limestone form card on Pumice canvas.
+ * Obsidian capability band with Ember accents.
  */
 export default function MintView() {
   const { mintToken, isPromptingWallet, isMining, error, success } = useMintToken();
   const isLoading = isPromptingWallet || isMining;
   const [metadata, setMetadata] = useState("");
   const [price, setPrice] = useState("");
-  const [imagePreview, setImagePreview] = useState(null); // base64 data URL
+  const [imagePreview, setImagePreview] = useState(null);
   const [isCompressing, setIsCompressing] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef(null);
@@ -65,7 +65,6 @@ export default function MintView() {
     e.preventDefault();
     if (!price) return;
 
-    // Build JSON tokenURI
     const tokenData = { metadata: metadata || "" };
     if (imagePreview) {
       tokenData.image = imagePreview;
@@ -77,57 +76,80 @@ export default function MintView() {
 
   return (
     <div>
-      {/* Hero — white canvas with centered type */}
-      <section className="feature-band feature-band--blue">
-        <WaveBackground />
-        <div className="section-container" style={{ maxWidth: "600px", padding: "120px 24px 64px", position: "relative", zIndex: 1, textAlign: "center" }}>
+      {/* Hero — Ember background with wave animation */}
+      <section
+        className="feature-band feature-band--ember"
+        style={{ backgroundColor: "var(--color-ember)" }}
+      >
+        <ForgeEmbersBackground />
+        <div
+          className="section-container"
+          style={{
+            maxWidth: "700px",
+            padding: "140px 24px 80px",
+            position: "relative",
+            zIndex: 1,
+            textAlign: "center"
+          }}
+        >
           <DecryptedText
             text="The Genesis Point"
-            className="text-product-display text-white"
-            style={{ marginBottom: "20px", display: "block", textAlign: "center", width: "100%" }}
-            scrambleColor="rgba(255,255,255,0.85)"
+            className="text-product-display"
+            style={{
+              marginBottom: "20px",
+              display: "block",
+              textAlign: "center",
+              width: "100%",
+              color: "var(--color-obsidian)"
+            }}
+            scrambleColor="rgba(7, 6, 7, 0.4)"
           />
-          <p className="text-body-lg" style={{ color: "rgba(255,255,255,0.65)", maxWidth: "420px", margin: "0 auto", textAlign: "center", cursor: "default" }}>
-            <SplitText 
-              text="Create and deploy your access tokens on the Ethereum network. Simple, secure, and permanent." 
-              charClassName="char-item" 
+          <p
+            className="text-body-lg"
+            style={{
+              color: "rgba(7, 6, 7, 0.6)",
+              maxWidth: "480px",
+              margin: "0 auto",
+              textAlign: "center",
+              cursor: "default"
+            }}
+          >
+            <SplitText
+              text="Create and deploy your access tokens on the Ethereum network. Simple, secure, and permanent."
+              charClassName="char-item"
               animationType="wavy"
             />
           </p>
         </div>
       </section>
 
-      {/* Form section — stone background, form-card centered */}
+      {/* Dotted separator */}
+      <div className="divider" />
+
+      {/* Form section — Pumice canvas, Limestone form card */}
       <section
         style={{
-          backgroundColor: "transparent",
-          padding: "64px 24px 80px",
+          padding: "var(--spacing-64) 24px var(--spacing-80)",
           display: "flex",
           justifyContent: "center",
           minHeight: "50vh"
         }}
       >
         <div className="form-card" id="mint-form-container">
-          <p
-            className="text-feature-heading"
-            style={{ marginBottom: "32px", fontWeight: 400 }}
-          >
+          <p className="text-heading-lg" style={{ marginBottom: "var(--spacing-32)" }}>
             Mint New Token
           </p>
 
           <form
             onSubmit={handleSubmit}
-            style={{ display: "flex", flexDirection: "column", gap: "24px" }}
+            style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-24)" }}
             id="mint-form"
           >
             {/* Metadata input */}
             <div>
               <label className="form-label" htmlFor="metadata-input">
                 Metadata
-                <span
-                  className="text-caption"
-                  style={{ marginLeft: "8px", fontWeight: 400 }}
-                >
+                <span className="text-caption" style={{ marginLeft: "8px" }}>
                   (optional)
                 </span>
               </label>
@@ -139,7 +161,7 @@ export default function MintView() {
                 value={metadata}
                 onChange={(e) => setMetadata(e.target.value)}
               />
-              <p className="text-caption" style={{ marginTop: "6px" }}>
+              <p className="text-caption" style={{ marginTop: "8px" }}>
                 Attach an optional metadata string to your token for on-chain identification.
               </p>
             </div>
@@ -148,10 +170,7 @@ export default function MintView() {
             <div>
               <label className="form-label">
                 Token Image
-                <span
-                  className="text-caption"
-                  style={{ marginLeft: "8px", fontWeight: 400 }}
-                >
+                <span className="text-caption" style={{ marginLeft: "8px" }}>
                   (optional)
                 </span>
               </label>
@@ -167,21 +186,21 @@ export default function MintView() {
                 >
                   {isCompressing ? (
                     <div style={{ textAlign: "center" }}>
-                      <div className="text-caption" style={{ color: "var(--color-slate)" }}>
+                      <div className="text-caption" style={{ color: "rgba(7, 6, 7, 0.5)" }}>
                         Compressing image…
                       </div>
                     </div>
                   ) : (
                     <>
-                      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--color-muted)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="rgba(7, 6, 7, 0.3)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                         <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
                         <circle cx="8.5" cy="8.5" r="1.5" />
                         <polyline points="21 15 16 10 5 21" />
                       </svg>
-                      <p className="text-caption" style={{ marginTop: "8px", color: "var(--color-slate)" }}>
-                        Drag & drop an image, or <span style={{ color: "var(--color-blue)", cursor: "pointer", fontWeight: 500 }}>browse</span>
+                      <p className="text-caption" style={{ marginTop: "10px" }}>
+                        Drag & drop an image, or <span style={{ color: "var(--color-ember)", cursor: "pointer", fontWeight: 500 }}>browse</span>
                       </p>
-                      <p className="text-caption" style={{ fontSize: "12px", marginTop: "4px" }}>
+                      <p className="text-micro" style={{ marginTop: "4px" }}>
                         Image will be compressed to a small thumbnail for on-chain storage
                       </p>
                     </>
@@ -189,16 +208,16 @@ export default function MintView() {
                 </div>
               ) : (
                 <div className="image-preview-container">
-                  <img 
-                    src={imagePreview} 
-                    alt="Token preview" 
+                  <img
+                    src={imagePreview}
+                    alt="Token preview"
                     className="image-preview-thumb"
                   />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <p className="text-caption" style={{ color: "var(--color-ink)", fontWeight: 500 }}>
+                    <p className="text-body-sm" style={{ color: "var(--color-obsidian)" }}>
                       Image attached
                     </p>
-                    <p className="text-caption" style={{ fontSize: "12px" }}>
+                    <p className="text-micro" style={{ marginTop: "2px" }}>
                       {Math.round((imagePreview.length - imagePreview.indexOf(",") - 1) * 0.75 / 1024)}KB compressed
                     </p>
                   </div>
@@ -239,7 +258,7 @@ export default function MintView() {
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
               />
-              <p className="text-caption" style={{ marginTop: "6px" }}>
+              <p className="text-caption" style={{ marginTop: "8px" }}>
                 Set the initial price for minting your token.
               </p>
             </div>
@@ -247,14 +266,8 @@ export default function MintView() {
             {/* Error display */}
             {error && (
               <div
-                style={{
-                  padding: "12px 16px",
-                  borderRadius: "var(--radius-xs)",
-                  border: "1px solid rgba(179,0,0,0.2)",
-                  backgroundColor: "#fff0f0",
-                  color: "var(--color-error)",
-                  fontSize: "14px",
-                }}
+                className="status-strip--error"
+                style={{ padding: "14px 18px", fontSize: "var(--text-body-sm)" }}
               >
                 {error}
               </div>
@@ -264,25 +277,26 @@ export default function MintView() {
             {success && (
               <div
                 style={{
-                  padding: "12px 16px",
-                  borderRadius: "var(--radius-xs)",
-                  border: "1px solid rgba(0,179,0,0.2)",
-                  backgroundColor: "#f0fff0",
-                  color: "green",
-                  fontSize: "14px",
+                  padding: "14px 18px",
+                  borderRadius: "var(--radius-small)",
+                  border: "1.5px solid rgba(45, 125, 70, 0.2)",
+                  backgroundColor: "rgba(45, 125, 70, 0.06)",
+                  color: "var(--color-success)",
+                  fontSize: "var(--text-body-sm)",
+                  fontWeight: "var(--font-weight-medium)",
                 }}
               >
                 Token minted successfully!
               </div>
             )}
 
-            {/* Submit — primary pill CTA */}
+            {/* Submit — Ember pill CTA */}
             <button
               className="btn-primary"
               type="submit"
               disabled={isLoading || isCompressing}
               id="mint-btn"
-              style={{ alignSelf: "flex-start", marginTop: "8px" }}
+              style={{ alignSelf: "flex-start", marginTop: "var(--spacing-8)" }}
             >
               {isLoading ? "Processing…" : "Mint New Token"}
             </button>
@@ -290,9 +304,8 @@ export default function MintView() {
         </div>
       </section>
 
-      {/* Capability band — informational, blue theme */}
-      <section className="feature-band feature-band--blue" style={{ padding: "56px 0" }}>
-        <WaveBackground />
+      {/* Capability band — Obsidian with Ember accents */}
+      <section className="feature-band" style={{ padding: "var(--spacing-64) 0", minHeight: "auto" }}>
         <div className="section-container">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
@@ -315,23 +328,25 @@ export default function MintView() {
               <div
                 key={item.label}
                 style={{
-                  borderTop: "1px solid rgba(255,255,255,0.2)",
-                  paddingTop: "24px",
+                  borderTop: "2px solid var(--color-ember)",
+                  paddingTop: "var(--spacing-24)",
                 }}
               >
                 <span
-                  className="text-mono-label"
-                  style={{ color: "rgba(255,255,255,0.5)", display: "block", marginBottom: "10px" }}
+                  className="chip"
+                  style={{
+                    display: "inline-block",
+                    marginBottom: "var(--spacing-12)",
+                    fontSize: "12px",
+                    padding: "3px 8px"
+                  }}
                 >
                   {item.label}
                 </span>
-                <p
-                  className="text-feature-heading text-white"
-                  style={{ marginBottom: "10px" }}
-                >
+                <p className="text-subheading text-chalk" style={{ marginBottom: "var(--spacing-10)" }}>
                   {item.title}
                 </p>
-                <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.6)", lineHeight: 1.6 }}>
+                <p style={{ fontSize: "var(--text-body-sm)", color: "rgba(255,255,255,0.55)", lineHeight: 1.55 }}>
                   {item.body}
                 </p>
               </div>

@@ -6,84 +6,87 @@ import DecryptedText from "../components/DecryptedText";
 import Lottie from "lottie-react";
 import removeItemAnim from "../../public/assets/remove-item.json";
 import walletAnim from "../../public/assets/wallet.json";
-import LeafMatrixBackground from "../components/LeafMatrixBackground";
+import HexVaultBackground from "../components/HexVaultBackground";
 import SplitText from "../components/SplitText";
 
 /* --------------------------------------------------------------------------
-   Skeleton inventory card
+   Skeleton inventory card — Caldera
    -------------------------------------------------------------------------- */
 function InventorySkeleton() {
   return (
     <div className="product-card" aria-hidden="true">
-      <div className="skeleton" style={{ height: "100px", borderRadius: "var(--radius-xs)" }} />
-      <div className="skeleton" style={{ height: "14px", width: "50%", borderRadius: "var(--radius-xs)" }} />
-      <div className="skeleton" style={{ height: "36px", borderRadius: "var(--radius-xs)" }} />
+      <div className="skeleton" style={{ height: "120px", borderRadius: "var(--radius-medium)" }} />
+      <div className="skeleton" style={{ height: "16px", width: "50%", borderRadius: "var(--radius-small)" }} />
+      <div className="skeleton" style={{ height: "40px", borderRadius: "var(--radius-inputs)" }} />
     </div>
   );
 }
 
 /* --------------------------------------------------------------------------
-   Single owned-token inventory card
+   Single owned-token inventory card — Caldera
+   Limestone surface, 40px radius, pill inputs, Ember CTA
    -------------------------------------------------------------------------- */
 function InventoryCard({ tokenId, metadata, image, onList, isListing, price, onPriceChange }) {
   return (
-    <div 
-      className="form-card" 
+    <div
+      className="product-card"
       id={`owned-${tokenId}`}
-      style={{ 
-        maxWidth: "100%",
+      style={{
         padding: "0",
-        display: "flex",
-        flexDirection: "column",
-        gap: "0",
         overflow: "hidden"
       }}
     >
       {/* Token image or placeholder */}
       <div
         style={{
-          height: "160px",
+          height: "180px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: image ? "transparent" : "var(--color-near-black)",
+          backgroundColor: image ? "transparent" : "var(--color-obsidian)",
           overflow: "hidden",
-          borderRadius: "22px 22px 0 0"
+          borderRadius: "var(--radius-cards) var(--radius-cards) 0 0"
         }}
       >
         {image ? (
           <img src={image} alt={`Token ${tokenId}`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
         ) : (
-          <span className="text-mono-label" style={{ opacity: 0.4, color: "var(--color-white)" }}>
+          <span
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: "24px",
+              color: "rgba(255,255,255,0.2)",
+              letterSpacing: "0.04em",
+              textTransform: "uppercase",
+            }}
+          >
             TOKEN #{tokenId}
           </span>
         )}
       </div>
 
       {/* Card body */}
-      <div style={{ padding: "24px 32px 32px", display: "flex", flexDirection: "column", gap: "24px" }}>
+      <div style={{ padding: "var(--spacing-24) var(--spacing-32) var(--spacing-32)", display: "flex", flexDirection: "column", gap: "var(--spacing-20)" }}>
         <div style={{ textAlign: "left" }}>
-          <span className="text-mono-label" style={{ color: "var(--color-muted)", fontSize: "12px", display: "block", marginBottom: "8px" }}>
+          {/* Sulfur tag */}
+          <span className="chip" style={{ marginBottom: "10px", fontSize: "12px", padding: "3px 8px", display: "inline-block" }}>
             OWNED ASSET
           </span>
-          <p
-            className="text-card-heading"
-            style={{ fontWeight: 500, color: "var(--color-near-black)" }}
-          >
+          <p className="text-subheading">
             {metadata || `Token #${tokenId}`}
           </p>
           {metadata && (
-            <span className="text-mono-label" style={{ color: "var(--color-muted)", fontSize: "11px", marginTop: "4px", display: "block" }}>
+            <span className="text-micro" style={{ marginTop: "4px", display: "block" }}>
               Token #{tokenId}
             </span>
           )}
         </div>
 
-        {/* Divider */}
-        <div className="divider" style={{ margin: "0 -32px" }} />
+        {/* Dotted divider */}
+        <div style={{ borderTop: "1.5px dotted rgba(7, 6, 7, 0.15)", margin: "0 calc(-1 * var(--spacing-32))" }} />
 
         {/* List form */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "var(--spacing-16)" }}>
           <div>
             <label className="form-label" htmlFor={`price-input-${tokenId}`}>
               Listing Price (ETH)
@@ -98,14 +101,14 @@ function InventoryCard({ tokenId, metadata, image, onList, isListing, price, onP
               value={price || ""}
               onChange={(e) => onPriceChange(tokenId, e.target.value)}
             />
-            <p className="text-caption" style={{ marginTop: "6px" }}>
+            <p className="text-caption" style={{ marginTop: "8px" }}>
               Set the price for other users to buy this token.
             </p>
           </div>
-          
+
           <button
             className="btn-primary"
-            style={{ width: "100%", justifyContent: "center", marginTop: "8px" }}
+            style={{ width: "100%", justifyContent: "center" }}
             disabled={isListing || !price}
             onClick={() => onList(tokenId, price)}
             id={`list-btn-${tokenId}`}
@@ -119,8 +122,8 @@ function InventoryCard({ tokenId, metadata, image, onList, isListing, price, onP
 }
 
 /* --------------------------------------------------------------------------
-   DashboardView
-   Dark-feature-band hero → inventory card grid
+   DashboardView — Caldera
+   Obsidian hero with Ember leaf particles → inventory grid
    -------------------------------------------------------------------------- */
 export default function DashboardView() {
   const { address, isConnected } = useWallet();
@@ -135,26 +138,26 @@ export default function DashboardView() {
 
   return (
     <div>
-      {/* Hero — dark-feature-band (deep enterprise green) */}
-      <section className="feature-band">
-        <LeafMatrixBackground />
+      {/* Hero — Obsidian with Ember leaf particles */}
+      <section className="feature-band" style={{ position: "relative" }}>
+        <HexVaultBackground theme="dark" />
         <div
           className="section-container"
-          style={{ padding: "120px 24px 64px", position: "relative", zIndex: 1, textAlign: "center" }}
+          style={{ padding: "140px 24px 80px", position: "relative", zIndex: 1, textAlign: "center" }}
         >
-          <span className="text-mono-label" style={{ color: "rgba(255,255,255,0.55)", marginBottom: "12px", display: "block" }}>
+          <span className="chip" style={{ marginBottom: "16px", display: "inline-block" }}>
             YOUR COLLECTION
           </span>
           <DecryptedText
             text="My Dashboard"
-            className="text-product-display text-white"
+            className="text-product-display text-chalk"
             style={{ marginBottom: "16px", display: "block", textAlign: "center", width: "100%" }}
-            scrambleColor="rgba(255,255,255,0.85)"
+            scrambleColor="rgba(252, 80, 0, 0.8)"
           />
-          <p className="text-body-lg" style={{ color: "rgba(255,255,255,0.65)", maxWidth: "440px", margin: "0 auto", cursor: "default" }}>
-            <SplitText 
-              text="Manage your regulated access tokens and list them on the marketplace." 
-              charClassName="char-item" 
+          <p className="text-body-lg" style={{ color: "rgba(255,255,255,0.55)", maxWidth: "440px", margin: "0 auto", cursor: "default" }}>
+            <SplitText
+              text="Manage your regulated access tokens and list them on the marketplace."
+              charClassName="char-item"
               animationType="tumble"
             />
           </p>
@@ -162,15 +165,15 @@ export default function DashboardView() {
       </section>
 
       {/* Content section */}
-      <section style={{ padding: "56px 0 80px", backgroundColor: "transparent", minHeight: "50vh" }}>
+      <section style={{ padding: "var(--spacing-56) 0 var(--spacing-80)", minHeight: "50vh" }}>
         <div className="section-container">
 
           {/* Not connected */}
           {!isConnected && (
-            <div 
-              className="form-card" 
-              style={{ 
-                margin: "60px auto", 
+            <div
+              className="form-card"
+              style={{
+                margin: "60px auto",
                 textAlign: "center",
                 display: "flex",
                 flexDirection: "column",
@@ -180,11 +183,11 @@ export default function DashboardView() {
               <div style={{ width: "120px", height: "120px", marginBottom: "16px" }}>
                 <Lottie animationData={walletAnim} loop={true} speed={0.8} />
               </div>
-              <p className="text-body-lg" style={{ color: "var(--color-ink)", fontWeight: 500 }}>
-                Connect your wallet to view your tokens.
+              <p className="text-heading" style={{ marginBottom: "8px" }}>
+                Wallet Required
               </p>
               <p className="text-caption" style={{ marginTop: "8px", maxWidth: "340px" }}>
-                Your token collection will appear here once connected.
+                Connect your wallet to view your tokens. Your token collection will appear here once connected.
               </p>
             </div>
           )}
@@ -199,22 +202,15 @@ export default function DashboardView() {
           {/* Error */}
           {isConnected && !isLoading && error && (
             <div style={{ textAlign: "center", padding: "60px 0" }}>
-              <p className="text-body-lg" style={{ color: "var(--color-muted)" }}>{error}</p>
+              <p className="text-body-lg" style={{ color: "rgba(7, 6, 7, 0.5)" }}>{error}</p>
             </div>
           )}
 
           {/* List error banner */}
           {listError && (
             <div
-              style={{
-                padding: "12px 16px",
-                marginBottom: "24px",
-                borderRadius: "var(--radius-xs)",
-                border: "1px solid rgba(179,0,0,0.2)",
-                backgroundColor: "#fff0f0",
-                color: "var(--color-error)",
-                fontSize: "14px",
-              }}
+              className="status-strip--error"
+              style={{ padding: "14px 18px", marginBottom: "24px", fontSize: "var(--text-body-sm)" }}
             >
               {listError}
             </div>
@@ -222,10 +218,10 @@ export default function DashboardView() {
 
           {/* Empty */}
           {isConnected && !isLoading && !error && ownedTokenIds.length === 0 && (
-            <div 
-              className="form-card" 
-              style={{ 
-                margin: "60px auto", 
+            <div
+              className="form-card"
+              style={{
+                margin: "60px auto",
                 textAlign: "center",
                 display: "flex",
                 flexDirection: "column",
@@ -240,8 +236,8 @@ export default function DashboardView() {
                   <Lottie animationData={walletAnim} loop={true} speed={0.8} />
                 </div>
               </div>
-              <p className="text-body-lg" style={{ color: "var(--color-ink)", fontWeight: 500 }}>
-                You don't own any tokens yet.
+              <p className="text-heading" style={{ marginBottom: "8px" }}>
+                No Tokens Yet
               </p>
               <p className="text-caption" style={{ marginTop: "8px", maxWidth: "340px" }}>
                 Head to the Mint tab to create your first regulated access token and start your collection.

@@ -1,14 +1,15 @@
 import { useEffect, useRef } from "react";
 
 /**
- * LeafMatrixBackground
- * A "wind-blown" simulation where leaves whirl towards the North-East.
- * Mouse hover subtly attracts leaves without stopping their flow.
+ * LeafMatrixBackground — Caldera Edition
+ *
+ * Wind-blown ember particles that whirl towards the North-East.
+ * Uses warm Ember-tinted translucent color.
  */
-export default function LeafMatrixBackground({ 
-  count = 40, // Number of leaves (instead of rigid spacing)
-  leafSize = 10, 
-  color = "rgba(255, 255, 255, 0.15)",
+export default function LeafMatrixBackground({
+  count = 40,
+  leafSize = 10,
+  color = "rgba(252, 80, 0, 0.12)",
   windSpeed = 0.8,
 }) {
   const canvasRef = useRef(null);
@@ -23,19 +24,16 @@ export default function LeafMatrixBackground({
     let mouse = { x: -2000, y: -2000 };
     let leaves = [];
 
-    // Wind direction: North-East
-    const windDirection = { x: 1, y: -0.6 }; 
-    const attractionForce = 0.003; // Subtle pull
-    const swirlAmount = 0.02; // How much they "whirl"
+    const windDirection = { x: 1, y: -0.6 };
+    const attractionForce = 0.003;
 
     const initLeaves = () => {
       const rect = canvas.getBoundingClientRect();
       canvas.width = rect.width;
       canvas.height = rect.height;
 
-      // Density-based count if not specified
       const finalCount = count || Math.floor((canvas.width * canvas.height) / 15000);
-      
+
       leaves = [];
       for (let i = 0; i < finalCount; i++) {
         leaves.push({
@@ -45,7 +43,7 @@ export default function LeafMatrixBackground({
           vy: (Math.random() + 0.5) * windSpeed * windDirection.y,
           rotation: Math.random() * Math.PI * 2,
           rotationSpeed: (Math.random() - 0.5) * 0.05,
-          phase: Math.random() * Math.PI * 2, // For whirling
+          phase: Math.random() * Math.PI * 2,
           size: leafSize * (0.8 + Math.random() * 0.4)
         });
       }
@@ -69,7 +67,6 @@ export default function LeafMatrixBackground({
     }
 
     const resizeObserver = new ResizeObserver(() => {
-      // Re-init but try to keep positions if possible (or just reset)
       initLeaves();
     });
     if (container) resizeObserver.observe(container);
@@ -83,8 +80,8 @@ export default function LeafMatrixBackground({
       ctx.quadraticCurveTo(size * 0.7, 0, 0, size);
       ctx.quadraticCurveTo(-size * 0.7, 0, 0, -size);
       ctx.fill();
-      // Add a small vein line for detail
-      ctx.strokeStyle = "rgba(255,255,255,0.05)";
+      // Ember vein
+      ctx.strokeStyle = "rgba(252, 80, 0, 0.06)";
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(0, -size);
@@ -100,18 +97,15 @@ export default function LeafMatrixBackground({
       for (let i = 0; i < leaves.length; i++) {
         let leaf = leaves[i];
 
-        // 1. Base Wind Velocity
         let targetVx = windDirection.x * windSpeed;
         let targetVy = windDirection.y * windSpeed;
 
-        // 2. Whirling / Turbulence (using sine/cosine based on time and phase)
         const whirlX = Math.sin(time * 0.001 + leaf.phase) * 0.3;
         const whirlY = Math.cos(time * 0.001 + leaf.phase) * 0.3;
-        
+
         leaf.vx += (targetVx + whirlX - leaf.vx) * 0.02;
         leaf.vy += (targetVy + whirlY - leaf.vy) * 0.02;
 
-        // 3. Mouse Attraction (Subtle pull)
         const dx = mouse.x - leaf.x;
         const dy = mouse.y - leaf.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -120,17 +114,14 @@ export default function LeafMatrixBackground({
           const force = (250 - dist) / 250;
           leaf.vx += dx * force * attractionForce;
           leaf.vy += dy * force * attractionForce;
-          // Add extra spin when near mouse
           leaf.rotationSpeed += 0.0005 * force;
         }
 
-        // Update Position
         leaf.x += leaf.vx;
         leaf.y += leaf.vy;
         leaf.rotation += leaf.rotationSpeed;
-        leaf.rotationSpeed *= 0.98; // Decay extra spin
+        leaf.rotationSpeed *= 0.98;
 
-        // Wrap around logic (Matrix style)
         if (leaf.x > canvas.width + 20) leaf.x = -20;
         if (leaf.x < -20) leaf.x = canvas.width + 20;
         if (leaf.y > canvas.height + 20) leaf.y = -20;
@@ -156,7 +147,7 @@ export default function LeafMatrixBackground({
   }, [count, leafSize, color, windSpeed]);
 
   return (
-    <div 
+    <div
       ref={containerRef}
       style={{
         position: "absolute",
