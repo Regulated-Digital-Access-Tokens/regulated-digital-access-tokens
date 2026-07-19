@@ -10,10 +10,11 @@ export async function fetchEventsSafely(contract, filter, deploymentBlock) {
       err
     );
     try {
-      // Attempt 2: Fetch only the last 10,000 blocks
+      // Attempt 2: Fetch only the last 9,000 blocks
       // This is a common limit for free RPC nodes without archive access.
+      // -9000 ensures we stay well under the strict 10,000 block range limit (inclusive).
       // Note: This means very old tokens/listings won't show up!
-      return await contract.queryFilter(filter, -10000);
+      return await contract.queryFilter(filter, -9000);
     } catch (fallbackErr) {
       console.error("Fallback event fetch also failed:", fallbackErr);
       throw fallbackErr; // Let the hook catch it and show the error UI

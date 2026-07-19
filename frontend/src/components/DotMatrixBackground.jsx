@@ -1,5 +1,11 @@
 import { useEffect, useRef } from "react";
 
+/**
+ * DotMatrixBackground — Caldera Halftone
+ *
+ * Orange dots on a violet-to-ember gradient. The signature visual motif
+ * of the Caldera design system. Mouse interaction drags dots like embers.
+ */
 export default function DotMatrixBackground({ theme = "light", position = "absolute", zIndex = 0 }) {
   const canvasRef = useRef(null);
 
@@ -12,22 +18,22 @@ export default function DotMatrixBackground({ theme = "light", position = "absol
     let mouse = { x: -1000, y: -1000, vx: 0, vy: 0, lastX: -1000, lastY: -1000 };
     let dots = [];
 
-    const spacing = 20; // Distance between dots
-    const baseRadius = 2; // Normal size
-    const influenceRadius = 250; // How far mouse affects dots
-    const dragFactor = 0.8; // How much the mouse drags the dots
-    const spring = 0.1; // Spring back to original position
-    const friction = 0.7; // Damping/friction
+    const spacing = 20;
+    const baseRadius = 2;
+    const influenceRadius = 250;
+    const dragFactor = 0.8;
+    const spring = 0.1;
+    const friction = 0.7;
 
     const initDots = () => {
       const rect = canvas.getBoundingClientRect();
-      canvas.width = rect.width+200;
-      canvas.height = rect.height+200;
-      
+      canvas.width = rect.width + 200;
+      canvas.height = rect.height + 200;
+
       dots = [];
       const offsetX = (canvas.width % spacing) / 2;
       const offsetY = (canvas.height % spacing) / 2;
-      
+
       for (let x = offsetX; x < canvas.width; x += spacing) {
         for (let y = offsetY; y < canvas.height; y += spacing) {
           dots.push({ x, y, ox: 0, oy: 0, vx: 0, vy: 0 });
@@ -39,7 +45,7 @@ export default function DotMatrixBackground({ theme = "light", position = "absol
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      
+
       if (mouse.lastX === -1000) {
         mouse.lastX = x;
         mouse.lastY = y;
@@ -73,23 +79,23 @@ export default function DotMatrixBackground({ theme = "light", position = "absol
     } else {
       window.addEventListener("resize", initDots);
     }
-    
+
     initDots();
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Use a slate color for both, slightly more opaque on dark theme to remain visible
-      ctx.fillStyle = theme === "dark" ? "rgba(117, 117, 138, 0.5)" : "rgba(117, 117, 138, 0.4)"; 
+      // Caldera halftone: Ember orange dots on dark, warm pumice dots on light
+      ctx.fillStyle = theme === "dark"
+        ? "rgba(252, 80, 0, 0.45)"   // Ember orange dots
+        : "rgba(7, 6, 7, 0.12)";      // Obsidian dots (subtle on Pumice)
 
-      // Apply decay to mouse velocity so it stops applying force when mouse stops
       mouse.vx *= 0.5;
       mouse.vy *= 0.5;
 
       for (let i = 0; i < dots.length; i++) {
         let dot = dots[i];
 
-        // Apply force from mouse
         const dx = dot.x - mouse.x;
         const dy = dot.y - mouse.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -100,19 +106,15 @@ export default function DotMatrixBackground({ theme = "light", position = "absol
           dot.vy += mouse.vy * force * dragFactor;
         }
 
-        // Apply spring physics
         dot.vx += -dot.ox * spring;
         dot.vy += -dot.oy * spring;
 
-        // Apply friction
         dot.vx *= friction;
         dot.vy *= friction;
 
-        // Update position offset
         dot.ox += dot.vx;
         dot.oy += dot.vy;
 
-        // Dynamic radius based on movement to simulate catching light / ripples
         const speed = Math.sqrt(dot.vx * dot.vx + dot.vy * dot.vy);
         const r = baseRadius + Math.min(speed * 0.5, 4);
 
@@ -136,7 +138,7 @@ export default function DotMatrixBackground({ theme = "light", position = "absol
       }
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [theme]);
 
   return (
     <div style={{ position, top: 0, left: 0, width: "100%", height: "100%", zIndex, overflow: "hidden", pointerEvents: "none" }}>

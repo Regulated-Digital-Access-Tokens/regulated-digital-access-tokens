@@ -1,12 +1,13 @@
 import { useEffect, useRef } from "react";
 
 /**
- * WaveBackground
- * A fluid, multi-layered wave simulation for blue sections.
- * Layers move at different speeds to create depth.
+ * WaveBackground — Caldera Edition
+ *
+ * Fluid multi-layered wave simulation. Uses warm Ember-tinted
+ * translucent fills on dark sections.
  */
-export default function WaveBackground({ 
-  color = "rgba(255, 255, 255, 0.08)",
+export default function WaveBackground({
+  color = "rgba(252, 80, 0, 0.08)",
 }) {
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
@@ -18,8 +19,7 @@ export default function WaveBackground({
 
     let animationFrameId;
     let mouse = { x: -1000, y: -1000 };
-    
-    // Wave layers
+
     const layers = [
       { amplitude: 20, frequency: 0.008, speed: 0.8, offset: 0 },
       { amplitude: 15, frequency: 0.012, speed: 1.2, offset: Math.PI },
@@ -57,22 +57,16 @@ export default function WaveBackground({
         ctx.moveTo(0, canvas.height);
 
         for (let x = 0; x <= canvas.width; x += 10) {
-          // Base wave calculation with time-based phase shift
           const timePhase = time * 0.001 * layer.speed;
           let y = Math.sin(x * layer.frequency + timePhase + layer.offset) * layer.amplitude;
-          
-          // Additional slow vertical bobbing
           y += Math.cos(time * 0.0005 * layer.speed) * 5;
-          
-          // Mouse influence (add a "swell" near the mouse)
+
           const dist = Math.abs(x - mouse.x);
           if (dist < 250) {
             const force = (250 - dist) / 250;
             y += Math.sin(time * 0.004) * 15 * force;
           }
 
-          // Vertically center waves or put them at bottom?
-          // Let's stack them at different base heights
           const baseY = canvas.height * (0.4 + index * 0.15);
           ctx.lineTo(x, baseY + y);
         }
@@ -97,7 +91,7 @@ export default function WaveBackground({
   }, [color]);
 
   return (
-    <div 
+    <div
       ref={containerRef}
       style={{
         position: "absolute",
